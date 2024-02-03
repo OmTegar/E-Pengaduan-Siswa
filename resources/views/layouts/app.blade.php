@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'SMPN 18 MALANG') }}</title>
+    <title>{{ config('app.name', 'E-Polbangtan Healt Care') }}</title>
     {{-- <title>Dashboard</title> --}}
 
     <!-- Fonts -->
@@ -24,8 +24,13 @@
     <div x-data="setup()" x-init="$refs.loading.classList.add('hidden');" :class="{ 'dark': isDark }">
         <div class="flex h-screen antialiased text-gray-900 bg-gray-100 dark:bg-dark dark:text-light">
             <!-- Loading screen -->
-            @include('layouts.components.loading')
+            <div class="inset-0 bg-gray-800 fixed flex w-full h-full items-center justify-center duration-300 transition-opacity"style="z-index: 6000"
+                x-ref="loading">
+                <!-- Include your loading component content here -->
+                @include('layouts.components.loading')
+            </div>
 
+            {{-- loading function --}}
             <!-- Sidebar -->
             @include('layouts.sidebar')
 
@@ -52,12 +57,11 @@
             @include('layouts.search-panel')
         </div>
     </div>
-    {{-- <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.6.x/dist/component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script> --}}
 
     <script src="{{ asset('src/js/alpine.js') }}"></script>
-    {{-- <script src="{{ asset('src/vendor/component.min.js') }}"></script>
-    <script src="{{ asset('src/vendor/alpine.min.js') }}" defer></script> --}}
 </body>
+
+{{-- <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.6.x/dist/component.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script> --}}
 
 </html>

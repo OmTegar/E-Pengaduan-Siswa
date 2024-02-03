@@ -23,10 +23,10 @@
             Your Content
         </h2>
     </div>
-    {{-- <div class="space-x-4">
-        <a href="https://kamona-wd.github.io/kwd-dashboard/" target="_blank"
-            class="inline-block text-blue-600 hover:underline">Live</a>
-        <a href="https://github.com/Kamona-WD/kwd-dashboard" target="_blank"
-            class="inline-block text-blue-600 hover:underline">Github repo</a>
-    </div> --}}
 </x-app-layout>
+{{-- <div class="space-x-4">
+    <a href="https://kamona-wd.github.io/kwd-dashboard/" target="_blank"
+        class="inline-block text-blue-600 hover:underline">Live</a>
+    <a href="https://github.com/Kamona-WD/kwd-dashboard" target="_blank"
+        class="inline-block text-blue-600 hover:underline">Github repo</a>
+</div> --}}

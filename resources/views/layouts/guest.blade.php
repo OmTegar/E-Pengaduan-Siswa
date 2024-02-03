@@ -24,7 +24,9 @@
             <img src="{{ asset('img/login.jpg') }}"
                 alt="Placeholder Image" class="object-cover w-full h-full">
         </div>
-        {{ $slot }}
+        <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-5/12">
+            {{ $slot }}
+        </div>
     </div>
 
     <!-- Default system -->
