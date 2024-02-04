@@ -4,8 +4,9 @@
         <!-- Page wrapper -->
         <section class="shadow-xl w-full lg:mx-auto flex min-h-content">
             <!-- Left section -->
-            <div class="w-full lg:w-3/12 xl:w-2/6 flex flex-col justify-start items-stretch bg-white bg-opacity-80 p-3">
-                <div class="flex flex-row justify-between items-center mb-4">
+            <div
+                class="w-full xl:w-4/16 lg:w-5/12 md:w-12/12 flex flex-col justify-start items-stretch bg-white bg-opacity-80 p-3">
+                <div class="flex flex-row justify-between items-center mb-2">
                     <div class="flex flex-row">
                         <button
                             class="bg-red-500 text-white rounded-full p-1 mr-2 cursor-pointer h-4 w-4 focus:outline-none focus:ring"
@@ -20,9 +21,13 @@
                             aria-label="Minimize">
                         </button>
                     </div>
-                    <div class="p-1 rounded-full text-gray-500">
+                    <div class="w-full pt-1">
+                        <input type="text" placeholder="Search"
+                            class="search-input bg-gray-600 bg-opacity-10 placeholder-gray-500 text-gray-400 text-sm py-1 px-10 rounded-md outline-none w-full focus:outline-none focus:ring" />
+                    </div>
+                    <div class="mx-4 rounded-md text-gray-500 bg-red-500">
                         <a href="{{ route('reportCreate') }}"
-                            class="flex flex-col justify-center items-center p-2 rounded-full focus:ring-2 hover:bg-gray-50 hover:bg-opacity-30 focus:outline-none"
+                            class="flex flex-col justify-center items-center px-6 py-2 rounded-md focus:ring-2 hover:bg-gray-50 hover:bg-opacity-30 focus:outline-none"
                             aria-label="Add">
                             <svg class="fill-current h-4 w-4" viewBox="0 0 25 25">
                                 <path d="M11 11v-11h1v11h11v1h-11v11h-1v-11h-11v-1h11z" />
@@ -122,34 +127,34 @@
                             </ul>
                         </div>
                         <div class="w-full p-1">
-                            <div class="w-full p-1">
-                                <input type="text" placeholder="Search"
-                                    class="search-input bg-gray-600 bg-opacity-10 placeholder-gray-500 text-gray-400 text-sm py-1 px-10 rounded-md outline-none w-full focus:outline-none focus:ring" />
-                            </div>
-
                             {{-- email from ..... --}}
                             <ul class="overflow-y-auto">
-                                {{-- @foreach ($data as $key => $message)
-                                    <li>
-                                        @foreach ($message->content['data'] as $item)
-                                            Sender Keluhan: {{ $item['sender']['keluhan'] }}
-                                        @endforeach
-                                    </li>
-                                @endforeach --}}
                                 @isset($getLaporan)
-                                {{-- {{ $getLaporan }} --}}
                                     @foreach ($getLaporan as $key => $laporan)
-                                        <li
-                                            class="my-2 p-2 flex flex-row cursor-pointer rounded-lg hover:bg-gray-50 hover:bg-opacity-50">
-                                            @if ($laporan->sender->avatar_url != null)
-                                                <img class="h-12 w-12 rounded-full mr-4"
-                                                    src="{{ asset('storage/images/' . $laporan->sender->avatar_url) }}"
-                                                    alt="{{ $laporan->sender->name }}" />
+                                        <li class="my-2 p-2 flex flex-row cursor-pointer rounded-lg hover:bg-gray-50 hover:bg-opacity-50"
+                                            onclick="detailLaporanRequest('{{ $laporan->id }}')">
+                                            @if ($laporan->sender->name == Auth::user()->name)
+                                                @if ($laporan->avatar_recivers != null)
+                                                    <img class="h-12 w-12 rounded-full mr-4"
+                                                        src="{{ asset('storage/images/' . $laporan->avatar_recivers) }}"
+                                                        alt="{{ $laporan->reciver_names }}" />
+                                                @else
+                                                    <img class="h-12 w-12 rounded-full mr-4"
+                                                        :src="generateAvatar('{{ $laporan->email_recivers }}')"
+                                                        alt="{{ $laporan->reciver_names }}" />
+                                                @endif
                                             @else
-                                                <img class="h-12 w-12 rounded-full mr-4"
-                                                    :src="generateAvatar('{{ $laporan->sender->email }}')"
-                                                    alt="{{ $laporan->sender->name }}" />
+                                                @if ($laporan->sender->avatar_url != null)
+                                                    <img class="h-12 w-12 rounded-full mr-4"
+                                                        src="{{ asset('storage/images/' . $laporan->sender->avatar_url) }}"
+                                                        alt="{{ $laporan->sender->name }}" />
+                                                @else
+                                                    <img class="h-12 w-12 rounded-full mr-4"
+                                                        :src="generateAvatar('{{ $laporan->sender->email }}')"
+                                                        alt="{{ $laporan->sender->name }}" />
+                                                @endif
                                             @endif
+
                                             <script>
                                                 function generateAvatar(email) {
                                                     const name = email.substring(0, 2); // ambil dua huruf pertama dari email
@@ -157,161 +162,100 @@
                                                     return url;
                                                 }
                                             </script>
-                                            {{-- @include('layouts.components.avatar') --}}
                                             <div class="w-full flex flex-col justify-center">
                                                 <div class="flex flex-row justify-between items-center">
                                                     <h2 class="text-xs font-bold">
-                                                      {{ $laporan->sender->name }}
+                                                        @if ($laporan->sender->name == Auth::user()->name)
+                                                            {{ $laporan->reciver_names }}
+                                                        @else
+                                                            {{ $laporan->sender->name }}
+                                                        @endif
                                                     </h2>
                                                     <div class="text-xs flex flex-row">
-                                                        <svg class="w-4 h-4 text-blue-600 fill-current mr-1"
-                                                            viewBox="0 0 19 14">
-                                                            <path fill-rule="nonzero"
-                                                                d="M4.96833846,10.0490996 L11.5108251,2.571972 C11.7472185,2.30180819 12.1578642,2.27443181 12.428028,2.51082515 C12.6711754,2.72357915 12.717665,3.07747757 12.5522007,3.34307913 L12.4891749,3.428028 L5.48917485,11.428028 C5.2663359,11.6827011 4.89144111,11.7199091 4.62486888,11.5309823 L4.54038059,11.4596194 L1.54038059,8.45961941 C1.2865398,8.20577862 1.2865398,7.79422138 1.54038059,7.54038059 C1.7688373,7.31192388 2.12504434,7.28907821 2.37905111,7.47184358 L2.45961941,7.54038059 L4.96833846,10.0490996 L11.5108251,2.571972 L4.96833846,10.0490996 Z M9.96833846,10.0490996 L16.5108251,2.571972 C16.7472185,2.30180819 17.1578642,2.27443181 17.428028,2.51082515 C17.6711754,2.72357915 17.717665,3.07747757 17.5522007,3.34307913 L17.4891749,3.428028 L10.4891749,11.428028 C10.2663359,11.6827011 9.89144111,11.7199091 9.62486888,11.5309823 L9.54038059,11.4596194 L8.54038059,10.4596194 C8.2865398,10.2057786 8.2865398,9.79422138 8.54038059,9.54038059 C8.7688373,9.31192388 9.12504434,9.28907821 9.37905111,9.47184358 L9.45961941,9.54038059 L9.96833846,10.0490996 L16.5108251,2.571972 L9.96833846,10.0490996 Z">
-                                                            </path>
-                                                        </svg>
                                                         <span class="text-gray-400">
-                                                            10:45
+                                                            @if ($laporan->sender->name == Auth::user()->name)
+                                                                {{ $laporan->status }}
+                                                            @else
+                                                                @if ($laporan->status == 'terkirim')
+                                                                    laporan baru
+                                                                @elseif ($laporan->status == 'dibaca')
+                                                                    laporan dibaca
+                                                                @elseif ($laporan->status == 'diproses')
+                                                                    laporan diproses
+                                                                @elseif ($laporan->status == 'selesai')
+                                                                    laporan selesai
+                                                                @endif
+                                                            @endif
                                                         </span>
+
                                                     </div>
                                                 </div>
-                                                <div class="flex flex-row justify-between items-center">
+                                                <div class="flex flex-row justify-between items-center my-1">
                                                     <p class="text-xs text-gray-500">
                                                         {{ $laporan->message }}
                                                     </p>
-                                                    <span
-                                                        class="text-sm bg-blue-500 rounded-full w-5 h-5 text-center text-white font-bold">4</span>
+                                                    <p class="text-gray-400 text-xs">
+                                                        {{ $laporan->created_at->diffForHumans() }}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </li>
                                     @endforeach
                                 @endisset
-                                {{-- <li class="my-2 p-2 flex flex-row cursor-pointer rounded-lg hover:bg-gray-50 hover:bg-opacity-50">
-                              <img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/gettyimages-997145684-1547233351.jpg?crop=1xw:1xh;center,top&resize=480:*" class="h-12 w-12 rounded-full mr-4" alt="">
-                              <div class="w-full flex flex-col justify-center">
-                                <div class="flex flex-row justify-between items-center">
-                                  <h2 class="text-xs font-bold">Benjamin Julien</h2>
-                                  <div class="text-xs flex flex-row">
-                                    <svg class="w-4 h-4 text-blue-600 fill-current mr-1" viewBox="0 0 19 14">
-                                      <path fill-rule="nonzero" d="M4.96833846,10.0490996 L11.5108251,2.571972 C11.7472185,2.30180819 12.1578642,2.27443181 12.428028,2.51082515 C12.6711754,2.72357915 12.717665,3.07747757 12.5522007,3.34307913 L12.4891749,3.428028 L5.48917485,11.428028 C5.2663359,11.6827011 4.89144111,11.7199091 4.62486888,11.5309823 L4.54038059,11.4596194 L1.54038059,8.45961941 C1.2865398,8.20577862 1.2865398,7.79422138 1.54038059,7.54038059 C1.7688373,7.31192388 2.12504434,7.28907821 2.37905111,7.47184358 L2.45961941,7.54038059 L4.96833846,10.0490996 L11.5108251,2.571972 L4.96833846,10.0490996 Z M9.96833846,10.0490996 L16.5108251,2.571972 C16.7472185,2.30180819 17.1578642,2.27443181 17.428028,2.51082515 C17.6711754,2.72357915 17.717665,3.07747757 17.5522007,3.34307913 L17.4891749,3.428028 L10.4891749,11.428028 C10.2663359,11.6827011 9.89144111,11.7199091 9.62486888,11.5309823 L9.54038059,11.4596194 L8.54038059,10.4596194 C8.2865398,10.2057786 8.2865398,9.79422138 8.54038059,9.54038059 C8.7688373,9.31192388 9.12504434,9.28907821 9.37905111,9.47184358 L9.45961941,9.54038059 L9.96833846,10.0490996 L16.5108251,2.571972 L9.96833846,10.0490996 Z"></path>
-                                    </svg>
-                                    <span class="text-gray-400">
-                                      10:45
-                                    </span>
-                                  </div>
-                                </div>
-                                <div class="flex flex-row justify-between items-center">
-                                  <p class="text-xs text-gray-500">On projection apartments unsatiable...</p>
-                                  <span class="text-sm bg-blue-500 rounded-full w-5 h-5 text-center text-white font-bold">4</span>
-                                </div>
-                              </div>
-                            </li>
-                            <li class="my-2 p-2 flex flex-row bg-blue-500 rounded-lg cursor-pointer">
-                              <img src="https://t.aimg.sk/magaziny/Ts0fWXOKR12frPTjZ3a8UA~Prav-burger-dom-ca-buchta.png?t=LzB4MzU6NTg2eDM2NS85MjB4NzYwL3NtYXJ0L2ZpbHRlcnM6Zm9ybWF0KGpwZWcp&h=aSkfJNypYaRvL4kRNsFH8g&e=2145916800&v=5" class="h-12 w-12 rounded-full mr-4" alt="">
-                              <div class="w-full flex flex-col justify-center text-white">
-                                <div class="flex flex-row justify-between">
-                                  <h2 class="text-xs  font-bold">Food porn group</h2>
-                                  <span class="text-xs">10:45</span>
-                                </div>
-                                <div class="flex flex-row justify-between items-center">
-                                  <p class="text-xs">There are many variations of passages...</p>
-                                </div>
-                              </div>
-                            </li> --}}
+                                <li class="my-2 p-2 flex flex-row bg-blue-500 rounded-lg cursor-pointer">
+                                    <img src="https://t.aimg.sk/magaziny/Ts0fWXOKR12frPTjZ3a8UA~Prav-burger-dom-ca-buchta.png?t=LzB4MzU6NTg2eDM2NS85MjB4NzYwL3NtYXJ0L2ZpbHRlcnM6Zm9ybWF0KGpwZWcp&h=aSkfJNypYaRvL4kRNsFH8g&e=2145916800&v=5"
+                                        class="h-12 w-12 rounded-full mr-4" alt="">
+                                    <div class="w-full flex flex-col justify-center text-white">
+                                        <div class="flex flex-row justify-between">
+                                            <h2 class="text-xs  font-bold">Food porn group</h2>
+                                            <span class="text-xs">10:45</span>
+                                        </div>
+                                        <div class="flex flex-row justify-between items-center">
+                                            <p class="text-xs">There are many variations of passages...</p>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Middle section -->
-            <div
+            <div id="detailLaporanTab"
                 class="hidden w-9/12 bg-white lg:flex flex-col justify-start items-stretch border-r-2 border-l-2 border-gray-100">
-                <!-- Header with name -->
-                <div
-                    class="flex flex-row items-center justify-between px-3 py-2 bg-gray-50 bg-opacity-40 border-b-2 border-gray-100">
-                    <div class="">
-                        <h2 class="font-medium">Porn group</h2>
-                        <p class="text-xs text-gray-500">4 memebres</p>
-                    </div>
-                    <div class="flex flex-row">
-                        <button type="button"
-                            class="p-2 ml-2 text-gray-400 rounded-full hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring"
-                            aria-label="Search">
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 20 20">
-                                <path
-                                    d="M12.323,2.398c-0.741-0.312-1.523-0.472-2.319-0.472c-2.394,0-4.544,1.423-5.476,3.625C3.907,7.013,3.896,8.629,4.49,10.102c0.528,1.304,1.494,2.333,2.72,2.99L5.467,17.33c-0.113,0.273,0.018,0.59,0.292,0.703c0.068,0.027,0.137,0.041,0.206,0.041c0.211,0,0.412-0.127,0.498-0.334l1.74-4.23c0.583,0.186,1.18,0.309,1.795,0.309c2.394,0,4.544-1.424,5.478-3.629C16.755,7.173,15.342,3.68,12.323,2.398z M14.488,9.77c-0.769,1.807-2.529,2.975-4.49,2.975c-0.651,0-1.291-0.131-1.897-0.387c-0.002-0.004-0.002-0.004-0.002-0.004c-0.003,0-0.003,0-0.003,0s0,0,0,0c-1.195-0.508-2.121-1.452-2.607-2.656c-0.489-1.205-0.477-2.53,0.03-3.727c0.764-1.805,2.525-2.969,4.487-2.969c0.651,0,1.292,0.129,1.898,0.386C14.374,4.438,15.533,7.3,14.488,9.77z">
-                                </path>
-                            </svg>
-                        </button>
-                        <button type="button"
-                            class="p-2 ml-2 text-gray-400 xl:text-blue-500 rounded-full hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring"
-                            aria-label="Open">
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                                <g>
-                                    <rect fill="none" height="24" width="24" />
-                                    <g>
-                                        <path
-                                            d="M2,4v16h20V4H2z M20,8.67h-2.5V6H20V8.67z M17.5,10.67H20v2.67h-2.5V10.67z M4,6h11.5v12H4V6z M17.5,18v-2.67H20V18H17.5z" />
-                                    </g>
-                                </g>
-                            </svg>
-                        </button>
-                        <button type="button"
-                            class="p-2 ml-2 text-gray-400 rounded-full hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring"
-                            aria-label="More">
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                                <path fill-rule="nonzero"
-                                    d="M12,16 C13.1045695,16 14,16.8954305 14,18 C14,19.1045695 13.1045695,20 12,20 C10.8954305,20 10,19.1045695 10,18 C10,16.8954305 10.8954305,16 12,16 Z M12,10 C13.1045695,10 14,10.8954305 14,12 C14,13.1045695 13.1045695,14 12,14 C10.8954305,14 10,13.1045695 10,12 C10,10.8954305 10.8954305,10 12,10 Z M12,4 C13.1045695,4 14,4.8954305 14,6 C14,7.1045695 13.1045695,8 12,8 C10.8954305,8 10,7.1045695 10,6 C10,4.8954305 10.8954305,4 12,4 Z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <!-- Messages -->
-                <div class="flex-auto flex flex-col justify-between overflow-y-auto">
-
-                </div>
-                <!-- Input for writing a messages -->
-                <div class="flex flex-row justify-between items-center p-3">
-                    <div class="">
-                        <button type="button"
-                            class="p-2 text-gray-400 rounded-full hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring"
-                            aria-label="Upload a files">
-                            <svg class="fill-current h-6 w-6" viewBox="0 0 20 20">
-                                <path
-                                    d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="flex-1 px-3">
-                        <input type="text"
-                            class="w-full border-2 border-gray-100 rounded-full px-4 py-1 outline-none text-gray-500 focus:outline-none focus:ring"
-                            placeholder="Write a message...">
-                    </div>
-                    <div class="flex flex-row">
-                        <button type="button"
-                            class="p-2 text-gray-400 rounded-full hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring"
-                            aria-label="Show emojis">
-                            <svg class="fill-current h-6 w-6" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                <path
-                                    d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
-                            </svg>
-                        </button>
-                        <button type="button"
-                            class="p-2 ml-2 text-gray-400 rounded-full hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring"
-                            aria-label="Record a voice">
-                            <svg class="fill-current h-6 w-6" viewBox="0 0 20 20">
-                                <path
-                                    d="M10.403,15.231v2.035h2.827c0.223,0,0.403,0.181,0.403,0.404c0,0.223-0.181,0.403-0.403,0.403H6.77c-0.223,0-0.404-0.181-0.404-0.403c0-0.224,0.181-0.404,0.404-0.404h2.826v-2.035C6.89,15.024,4.751,12.758,4.751,10c0-0.223,0.181-0.403,0.404-0.403S5.559,9.777,5.559,10c0,2.449,1.992,4.441,4.441,4.441c2.449,0,4.441-1.992,4.441-4.441c0-0.223,0.182-0.403,0.404-0.403s0.403,0.18,0.403,0.403C15.248,12.758,13.108,15.024,10.403,15.231 M13.026,4.953V10c0,1.669-1.357,3.027-3.027,3.027S6.972,11.669,6.972,10V4.953c0-1.669,1.358-3.028,3.028-3.028S13.026,3.284,13.026,4.953M12.221,4.953c0-1.225-0.996-2.22-2.221-2.22s-2.221,0.995-2.221,2.22V10c0,1.225,0.996,2.22,2.221,2.22s2.221-0.995,2.221-2.22V4.953z">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
+                <div class="flex items-center justify-center w-full h-full">
+                  <h2 class="text-2xl uppercase font-medium">No Massage oppened</h2>
                 </div>
             </div>
         </section>
     </div>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        function detailLaporanRequest(id) {
+            fetch("/report-show/" + id, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                    },
+                    body: JSON.stringify({
+                        uuid: id
+                    }),
+                })
+                .then((response) => {
+                    if (!response.ok) throw Error(`HTTP error! Status: ${response.status}`);
+                    return response.json();
+                })
+                .then((data) => {
+                    const detailLaporanTab = document.getElementById("detailLaporanTab");
+                    detailLaporanTab.innerHTML = data.detailReport;
+                    // console.log(data);
+                })
+                .catch((error) => console.error("Error:", error));
+        }
+    </script>
 </x-app-layout>
 
 <!-- component -->

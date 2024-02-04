@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ReportReciver;
 use App\Models\User;
 use App\Models\Report;
+use Illuminate\Http\Request;
+use App\Models\ReportReciver;
+use function Termwind\render;
 use App\Http\Controllers\Controller;
-use function Laravel\Prompts\select;
-use Illuminate\Http\RedirectResponse;
 
+use function Laravel\Prompts\select;
+
+use Illuminate\Support\Facades\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 
 class ReportController extends Controller
 {
@@ -21,11 +24,36 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $getLaporan = Report::whereHas('reciver', function ($query) {
+        $getLaporan = Report::where('sender_id', auth()->user()->id)->orWhereHas('reciver', function ($query) {
             $query->where('reciver_id', auth()->user()->id);
-        })->get();
+        })->with('reciver')
+            ->get();
 
-        return view('reports.index', compact('getLaporan'));
+        $getLaporan->each(function ($laporan) {
+            $recivers = User::whereIn('id', $laporan->reciver->pluck('reciver_id'))->get();
+            $nameRecivers = $recivers->pluck('name')->toArray();
+            $avatarRecivers = $recivers->pluck('avatar_url')->toArray();
+            $emailRecivers = $recivers->pluck('email')->toArray();
+
+            $laporan->email_recivers = $emailRecivers[0] ?? null;
+            $laporan->avatar_recivers = $avatarRecivers[0] ?? null;
+            $laporan->reciver_names = '';
+            $count = 1;
+
+            foreach ($nameRecivers as $reciver) {
+                if ($count === 1) {
+                    $laporan->reciver_names .= $reciver;
+                } else {
+                    $laporan->reciver_names .= ' & ' . count($recivers) - 1 . ' others';
+                }
+                $count++;
+            }
+        });
+
+        $detailLaporan = null;
+
+        // dd($getLaporan);
+        return view('reports.index', compact('getLaporan', 'detailLaporan'));
     }
 
 
@@ -83,9 +111,21 @@ class ReportController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Report $report)
+    public function show($uuid)
     {
-        //
+        // Fetch the report with the specified UUID and its reciver relationship
+        $detailLaporan = Report::where('id', $uuid)->with('reciver')->first();
+
+        if (!$detailLaporan) {
+            // Handle the case where the report is not found
+            return response()->json(['error' => 'Report not found'], 404);
+        }
+
+        // Render the view 'layouts.detailReportOpen' with the data '$detailLaporan'
+        $view = View::make('layouts.detailLaporanTable', ['detailLaporan' => $detailLaporan]);
+
+        // Return a JSON response with the rendered HTML
+        return response()->json(['detailReport' => $view->render()]);
     }
 
     /**

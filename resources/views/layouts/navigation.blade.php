@@ -2,7 +2,7 @@
     <div class="flex items-center justify-between p-2 border-b dark:border-blue-800">
         <!-- Mobile menu button -->
         <button @click="isMobileMainMenuOpen = !isMobileMainMenuOpen"
-            class="p-1 text-blue-400 transition-colors duration-200 rounded-md bg-blue-50 hover:text-blue-600 hover:bg-blue-100 dark:hover:text-light dark:hover:bg-blue-700 dark:bg-dark md:hidden focus:outline-none focus:ring">
+            class="p-1 text-blue-400 transition-colors duration-200 rounded-md bg-blue-50 hover:text-blue-600 hover:bg-blue-100 dark:hover:text-light dark:hover:bg-blue-700 dark:bg-dark lg:hidden focus:outline-none focus:ring">
             <span class="sr-only">Open main manu</span>
             <span aria-hidden="true">
                 <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -67,13 +67,13 @@
         </nav>
     </div>
     <!-- Mobile main manu -->
-    <div class="border-b md:hidden dark:border-blue-800" x-show="isMobileMainMenuOpen"
+    <div class="border-b lg:hidden dark:border-blue-800" x-show="isMobileMainMenuOpen"
         @click.away="isMobileMainMenuOpen = false">
         <nav aria-label="Main" class="px-2 py-4 space-y-2">
             <!-- Dashboards links -->
             <div x-data="{ isActive: false, open: false }">
                 <!-- active & hover classes 'bg-blue-100 dark:bg-blue-600' -->
-                <a href="#" @click="$event.preventDefault(); open = !open"
+                <a @click="$event.preventDefault(); open = !open"
                     class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-blue-100 dark:hover:bg-blue-600"
                     :class="{ 'bg-blue-100 dark:bg-blue-600': isActive || open }" role="button" aria-haspopup="true"
                     :aria-expanded="(open || isActive) ? 'true' : 'false'">
@@ -95,22 +95,7 @@
                         </svg>
                     </span>
                 </a>
-                <div role="menu" x-show="open" class="mt-2 space-y-2 px-7" aria-label="Dashboards">
-                    <!-- active & hover classes 'text-gray-700 dark:text-light' -->
-                    <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
-                        Default
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        Project Mangement
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        E-Commerce
-                    </a>
-                </div>
+                @include('components.menunav-dashboard')
             </div>
 
             <!-- Components links -->

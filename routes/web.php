@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('report', [ReportController::class, 'index'])->name('reportShow');
     Route::get('report-create', [ReportController::class, 'create'])->name('reportCreate');
     Route::post('report-store', [ReportController::class, 'store'])->name('reportStore');
+    Route::post('report-show/{uuid}', [ReportController::class, 'show'])->name('reportShowDetail');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
