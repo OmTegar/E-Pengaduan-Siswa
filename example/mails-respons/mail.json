@@ -1,0 +1,42 @@
+{
+    "data": [
+        {
+            "sender": {
+                "keluhan": "Saya ingin mengajukan keluhan terkait pelayanan yang kurang memuaskan",
+                "tanggal": "2021-08-01",
+                "dokumen_id": [
+                    "1",
+                    "2",
+                    "3"
+                ]
+            },
+            "responder": {
+                "tanggapan": "Mohon maaf atas ketidaknyamanan yang anda alami, kami akan segera menindaklanjuti keluhan anda",
+                "tanggal": "2021-08-02"
+            }
+        },
+        {
+            "sender": {
+                "keluhan": "Siap pak mohon di tindak lanjuti keluhan saya",
+                "tanggal": "2021-08-01",
+                "dokumen_id": [
+                    "1",
+                    "2",
+                    "3"
+                ]
+            }
+        }
+    ],
+    "dataSender" : [
+        {
+            "name": "Aisyatul Huriyah",
+            "email": "aisyatul@gmail.com"
+        }
+    ],
+    "dataResponder" : [
+        {
+            "name": "Tegar Dito",
+            "email": "tegar@gmail.com"
+        }
+    ]
+}

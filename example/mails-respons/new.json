@@ -1,0 +1,22 @@
+{
+    "mails": [
+        {
+            "id": 1,
+            "sender_id": 1,
+            "receiver_id": 2,
+            "subject": "Keluhan",
+            "message": "Saya ingin mengajukan keluhan terkait pelayanan yang kurang memuaskan",
+            "date": "2021-08-01",
+            "document_ids": [1, 2, 3]
+        },
+        {
+            "id": 2,
+            "sender_id": 2,
+            "receiver_id": 1,
+            "subject": "Tanggapan Keluhan",
+            "message": "Mohon maaf atas ketidaknyamanan yang anda alami, kami akan segera menindaklanjuti keluhan anda",
+            "date": "2021-08-02",
+            "document_ids": []
+        }
+    ]
+}

@@ -8,7 +8,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
+// class User extends Authenticatable implements MustVerifyEmail
 { 
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -22,6 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'avatar_url',
+        'role_id',
+        'anonymous_name',
     ];
 
     /**
@@ -43,4 +46,28 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relationship: Seorang user memiliki satu role.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Relationship: Seorang user dapat memiliki banyak laporan.
+     */
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'sender_id');
+    }
+
+    /**
+     * Relationship: Seorang user dapat memiliki banyak penerimaan laporan.
+     */
+    public function reportRecipients()
+    {
+        return $this->hasMany(ReportRecipient::class, 'recipient_id');
+    }
 }

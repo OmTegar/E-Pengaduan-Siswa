@@ -5,15 +5,12 @@
         <!-- Dashboards links -->
         <div x-data="{ isActive: false, open: true}">
           <!-- active & hover classes 'bg-blue-100 dark:bg-blue-600' -->
-          <a
-            href="#"
-            @click="$event.preventDefault(); open = !open"
+          <a @click="$event.preventDefault(); open = !open"
             class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-blue-100 dark:hover:bg-blue-600"
             :class="{'bg-blue-100 dark:bg-blue-600': isActive || open}"
             role="button"
             aria-haspopup="true"
-            :aria-expanded="(open || isActive) ? 'true' : 'false'"
-          >
+            :aria-expanded="(open || isActive) ? 'true' : 'false'">
             <span aria-hidden="true">
               <svg
                 class="w-5 h-5"
@@ -49,11 +46,10 @@
             <!-- active & hover classes 'text-gray-700 dark:text-light' -->
             <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
             <a
-              href="#"
+              href="{{ route('reportShow') }}"
               role="menuitem"
-              class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700"
-            >
-              Default
+              class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
+              Report
             </a>
             <a
               href="#"

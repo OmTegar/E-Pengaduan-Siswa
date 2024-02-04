@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -18,6 +20,7 @@ return new class extends Migration
             $table->string('avatar_url')->nullable()->default(null);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('anonymous')->unique()->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -26,8 +29,20 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+    
     public function down(): void
     {
+        // Dapatkan semua user
+        $users = DB::table('users')->get();
+
+        // Loop melalui setiap user
+        foreach ($users as $user) {
+            // Hapus avatar dari storage
+            if ($user->avatar_url) {
+                Storage::delete($user->avatar_url);
+            }
+        }
+
         Schema::dropIfExists('users');
     }
 };
