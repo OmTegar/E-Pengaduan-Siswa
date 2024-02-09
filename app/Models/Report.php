@@ -11,6 +11,8 @@ class Report extends Model
     use HasFactory;
     use HasUuids;
 
+    protected $with = ['sender', 'reciver', 'attachments'];
+
     /**
      * The attributes that are mass assignable.
      *

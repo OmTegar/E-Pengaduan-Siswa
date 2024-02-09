@@ -22,7 +22,7 @@ class ReportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except('show', 'showTab');
+        $this->middleware('auth');
     }
 
     /**
@@ -30,18 +30,16 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $getLaporan = Report::where('sender_id', auth()->user()->id)->orWhereHas('reciver', function ($query) {
-            $query->where('reciver_id', auth()->user()->id);
-        })->with('reciver')
-            ->get();
-
+        $getLaporan = Report::without('attachments')->get();
+        $getLaporan = $getLaporan->filter(function ($laporan) {
+            return $laporan->sender_id === Auth::user()->id || $laporan->reciver->contains('reciver_id', Auth::user()->id);
+        });
+        // dd($getLaporan);
         $getLaporan->each(function ($laporan) {
             $recivers = User::whereIn('id', $laporan->reciver->pluck('reciver_id'))->get();
             $nameRecivers = $recivers->pluck('name')->toArray();
             $avatarRecivers = $recivers->pluck('avatar_url')->toArray();
-            $emailRecivers = $recivers->pluck('email')->toArray();
-
-            $laporan->email_recivers = $emailRecivers[0] ?? null;
+            
             $laporan->avatar_recivers = $avatarRecivers[0] ?? null;
             $laporan->reciver_names = '';
             $count = 1;
@@ -57,16 +55,9 @@ class ReportController extends Controller
         });
 
         $getLaporan = $getLaporan->sortByDesc('created_at');
-        $totalLaporan = [
-            'totalAll' => $getLaporan->count(),
-            'totalUnread' => $getLaporan->where('status', 'terkirim')->count(),
-            'totalPersonal' => $getLaporan->where('reciver_id', Auth::user()->id)->count(),
-        ];
-
-        $detailLaporan = null;
 
         // dd($getLaporan);
-        return view('reports.index', compact('getLaporan', 'detailLaporan', 'totalLaporan'));
+        return view('reports.index', compact('getLaporan'));
     }
 
 
