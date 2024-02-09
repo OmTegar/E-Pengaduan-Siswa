@@ -32,7 +32,7 @@
                         </div>
                         @if (Auth::user()->role_id != 2)
                             <div class="mx-4 rounded-md text-gray-500 bg-red-500">
-                                <a href="{{ route('reportCreate') }}"
+                                <a href="{{ route('report.create') }}"
                                     class="flex flex-col justify-center items-center px-6 py-1 rounded-md focus:ring-2 hover:bg-gray-50 hover:bg-opacity-30 focus:outline-none"
                                     aria-label="Add">
                                     <img src="{{ asset('src/icon/add.png') }}" class="max-w-8" alt="create-laporan">
@@ -48,7 +48,7 @@
                                     @isset($getLaporan)
                                         @foreach ($getLaporan as $key => $laporan)
                                             <a class="my-2 p-2 flex flex-row cursor-pointer rounded-lg hover:bg-blue-600 hover:shadow-lg transition ease-in-out duration-150"
-                                                href="{{ route('reportShowDetailTab', $laporan->id) }}">
+                                                href="{{ route('report.show', $laporan->id) }}">
                                                 @if ($laporan->sender->name == Auth::user()->name)
                                                     @if ($laporan->avatar_recivers != null)
                                                         <img class="h-12 w-12 rounded-full mr-4"

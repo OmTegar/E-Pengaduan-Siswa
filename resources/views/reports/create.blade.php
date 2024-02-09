@@ -12,7 +12,7 @@
             @include('components.alerts')
 
             <!-- Page wrapper -->
-            <form action="{{ route('reportStore') }}" method="post">
+            <form action="{{ route('report.store') }}" method="post">
                 @csrf
                 <input type="hidden" name="Sender_id" value="{{ auth()->id() }}">
                 <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow rounded-xl drop-shadow-lg">

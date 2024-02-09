@@ -17,7 +17,7 @@
             <div class="w-full min-h-content bg-white lg:flex flex-col justify-start items-stretch">
                 <!-- Header -->
                 <header class="flex flex-row justify-between bg-gray-200 border-opacity-50">
-                    <a href="{{ route('reportShow') }}"
+                    <a href="{{ route('report.index') }}"
                         class="px-1 mx-2 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
                         <x-bx-arrow-back class="w-8 ease-in-out duration-300" />
                     </a>

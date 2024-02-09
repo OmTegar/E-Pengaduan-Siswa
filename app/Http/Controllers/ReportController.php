@@ -20,6 +20,11 @@ use App\Http\Requests\UpdateReportRequest;
 
 class ReportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except('show', 'showTab');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -116,7 +121,7 @@ class ReportController extends Controller
             $reportRecipient->save();
         }
 
-        return Redirect::route('reportShow')->with('success', 'Laporan berhasil dikirim');
+        return Redirect::route('report.index')->with('success', 'Laporan berhasil dikirim');
     }
 
 
@@ -124,23 +129,6 @@ class ReportController extends Controller
      * Display the specified resource.
      */
     public function show($uuid)
-    {
-        // Fetch the report with the specified UUID and its reciver relationship
-        $detailLaporan = Report::where('id', $uuid)->with('reciver')->first();
-
-        if (!$detailLaporan) {
-            // Handle the case where the report is not found
-            return response()->json(['error' => 'Report not found'], 404);
-        }
-
-        // Render the view 'layouts.detailReportOpen' with the data '$detailLaporan'
-        $view = View::make('layouts.detailLaporanTable', ['detailLaporan' => $detailLaporan]);
-
-        // Return a JSON response with the rendered HTML
-        return response()->json(['detailReport' => $view->render()]);
-    }
-
-    public function showTab($uuid)
     {
         // Fetch the report with the specified UUID and its reciver relationship
         $detailLaporan = Report::where('id', $uuid)->with('reciver')->get();
@@ -205,5 +193,19 @@ class ReportController extends Controller
     public function destroy(Report $report)
     {
         //
+    }
+
+    public function strore_document(Request $request)
+    {
+        $request->validate([
+            'document' => 'required|mimes:pdf|max:2048',
+        ]);
+
+        $documentName = time() . '.' . $request->document->extension();
+        $request->document->move(public_path('documents'), $documentName);
+
+        return back()
+            ->with('success', 'You have successfully upload file.')
+            ->with('file', $documentName);
     }
 }
