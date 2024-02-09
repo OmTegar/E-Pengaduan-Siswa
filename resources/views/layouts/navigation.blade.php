@@ -1,5 +1,5 @@
-<header class="relative bg-white dark:bg-darker">
-    <div class="flex items-center justify-between p-2 border-b dark:border-blue-800">
+<header class="relative bg-white dark:bg-darker drop-shadow-md">
+    <div class="flex items-center justify-between p-2 drop-shadow-md">
         <!-- Mobile menu button -->
         <button @click="isMobileMainMenuOpen = !isMobileMainMenuOpen"
             class="p-1 text-blue-400 transition-colors duration-200 rounded-md bg-blue-50 hover:text-blue-600 hover:bg-blue-100 dark:hover:text-light dark:hover:bg-blue-700 dark:bg-dark lg:hidden focus:outline-none focus:ring">

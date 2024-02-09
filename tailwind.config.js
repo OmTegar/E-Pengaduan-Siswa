@@ -7,9 +7,8 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
-        '"./node_modules/flowbite/**/*.js"'
-    ],
-
+        '"./node_modules/flowbite/**/*.js"',
+    ],  
     theme: {
         screens: {
           sm: '480px',
@@ -18,7 +17,7 @@ export default {
           xl: '1440px',
         },
         colors: {
-          'blue': '#1fb6ff',
+          'biru': '#1fb6ff',
           'purple': '#7e5bef',
           'pink': '#ff49db',
           'orange': '#ff7849',
@@ -28,6 +27,7 @@ export default {
           'gray': '#8492a6',
           'gray-light': '#d3dce6',
           'neutral': '#f5f5f5',
+          'utama-hijau':'#088395',
         },
         fontFamily: {
           sans: ['Graphik', 'sans-serif'],
@@ -35,7 +35,7 @@ export default {
         },
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['ui-sans-serif', 'system-ui', ...defaultTheme.fontFamily.sans],
             },
             minHeight: {
               'content': '93vh',

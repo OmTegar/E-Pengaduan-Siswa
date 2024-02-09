@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 
 use function Laravel\Prompts\select;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -50,10 +51,17 @@ class ReportController extends Controller
             }
         });
 
+        $getLaporan = $getLaporan->sortByDesc('created_at');
+        $totalLaporan = [
+            'totalAll' => $getLaporan->count(),
+            'totalUnread' => $getLaporan->where('status', 'terkirim')->count(),
+            'totalPersonal' => $getLaporan->where('reciver_id', Auth::user()->id)->count(),
+        ];
+
         $detailLaporan = null;
 
         // dd($getLaporan);
-        return view('reports.index', compact('getLaporan', 'detailLaporan'));
+        return view('reports.index', compact('getLaporan', 'detailLaporan', 'totalLaporan'));
     }
 
 
@@ -79,7 +87,10 @@ class ReportController extends Controller
             'recipient' => 'required',
             'Subject' => 'required',
             'Message' => 'required',
+            'roomType' => 'required',
         ]);
+
+        // dd($request->all());
 
         // Filter out "Choose Your Reciver"
         $filteredRecipients = array_filter($request->recipient, function ($recipient) {
@@ -94,6 +105,7 @@ class ReportController extends Controller
         $report->sender_id = $request->Sender_id;
         $report->subject = $request->Subject;
         $report->message = $request->Message;
+        $report->roomType = $request->roomType[0];
         $report->save();
 
         // Attach unique recipients to the report
@@ -126,6 +138,49 @@ class ReportController extends Controller
 
         // Return a JSON response with the rendered HTML
         return response()->json(['detailReport' => $view->render()]);
+    }
+
+    public function showTab($uuid)
+    {
+        // Fetch the report with the specified UUID and its reciver relationship
+        $detailLaporan = Report::where('id', $uuid)->with('reciver')->get();
+
+        if ($detailLaporan->first()->status === 'terkirim') {
+            if ($detailLaporan->first()->sender_id !== Auth::user()->id) {
+                $detailLaporan->first()->update(['status' => 'dibaca']);
+            }
+        }
+        $detailLaporan->each(function ($laporan) {
+            $recivers = User::whereIn('id', $laporan->reciver->pluck('reciver_id'))->get();
+            $nameRecivers = $recivers->pluck('name')->toArray();
+            $avatarRecivers = $recivers->pluck('avatar_url')->toArray();
+            $emailRecivers = $recivers->pluck('email')->toArray();
+
+            $laporan->email_recivers = $emailRecivers[0] ?? null;
+            $laporan->avatar_recivers = $avatarRecivers[0] ?? null;
+            $laporan->reciver_names = '';
+            $count = 1;
+
+            foreach ($nameRecivers as $reciver) {
+                if ($count === 1) {
+                    $laporan->reciver_names .= $reciver;
+                } else {
+                    $laporan->reciver_names .= ' & ' . count($recivers) - 1 . ' others';
+                }
+                $count++;
+            }
+        });
+
+        $detailLaporan = $detailLaporan->first();
+        // dd($detailLaporan);
+
+        if (!$detailLaporan) {
+            // Handle the case where the report is not found
+            return response()->json(['error' => 'Report not found'], 404);
+        }
+
+        // Render the view 'layouts.detailReportOpen' with the data '$detailLaporan'
+        return view('layouts.detailLaporanTab', compact('detailLaporan'));
     }
 
     /**

@@ -22,7 +22,7 @@
 
 <body class="font-sans antialiased">
     <div x-data="setup()" x-init="$refs.loading.classList.add('hidden');" :class="{ 'dark': isDark }">
-        <div class="flex h-screen antialiased text-gray-900 bg-gray-100 dark:bg-dark dark:text-light">
+        <div class="flex h-screen antialiased text-gray-900 bg-white dark:bg-darker dark:text-light">
             <!-- Loading screen -->
             <div class="inset-0 bg-gray-800 fixed flex w-full h-full items-center justify-center duration-300 transition-opacity"style="z-index: 6000"
                 x-ref="loading">
@@ -40,7 +40,7 @@
 
 
                 <!-- Main content -->
-                <main>
+                <main class="">
                     {{ $slot }}
                 </main>
 
