@@ -13,6 +13,8 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "mallardduck/blade-boxicons": "^2.4",
+        "owenvoke/blade-fontawesome": "^2.5",
+        "postare/blade-mdi": "^1.1",
         "ryangjchandler/blade-tabler-icons": "^2.2"
     },
     "require-dev": {

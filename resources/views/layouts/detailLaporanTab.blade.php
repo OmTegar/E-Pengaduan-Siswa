@@ -1,13 +1,27 @@
 <x-app-layout>
     <div name="header" class="px-6 py-4 md:p-4 mb-5">
         <h1 class="font-semibold text-2xl md:text-3xl mb-2 font-system-ui capitalize">
-            {{ __('Laporan') }}
+            @if ($detailLaporan->roomType == 'public')
+                {{ __('Laporan Publik') }}
+            @elseif ($detailLaporan->roomType == 'private')
+                {{ __('Laporan Pribadi') }}
+            @else
+                {{ __('Laporan anonim') }}
+            @endif
         </h1>
         <p class="text-sm mb-4 text-gray-400 dark:text-gray-400 font-system-ui capitalize">
             @if ($detailLaporan->sender_id == Auth::user()->id)
-                {{ __('Laporan Untuk') }} {{ $detailLaporan->reciver_names }}
+                @if ($detailLaporan->roomType == 'anonim')
+                    {{ __('Laporan Untuk') }} Anonim
+                @else
+                    {{ __('Laporan Untuk') }} {{ $detailLaporan->reciver_names }}
+                @endif
             @else
-                {{ __('Laporan Dari') }} {{ $detailLaporan->sender->name }}
+                @if ($detailLaporan->roomType == 'anonim')
+                    {{ __('Laporan Dari') }} Anonim
+                @else
+                    {{ __('Laporan Dari') }} {{ $detailLaporan->sender->name }}
+                @endif
             @endif
         </p>
         <div class="border-b border-gray-300 my-5"></div>
@@ -21,47 +35,87 @@
                         class="px-1 mx-2 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
                         <x-bx-arrow-back class="w-8 ease-in-out duration-300" />
                     </a>
-                    <div class="py-1 px-5 me-2">
+                    <div class="py-1 px-5 me-2 flex gap-2">
                         <p>konten samping kanan</p>
+                        <a href="#"
+                            class="px-1 mx-2 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
+                            <x-fas-edit class="w-8 ease-in-out duration-300" />
+                        </a>
                     </div>
                 </header>
 
                 <!-- Content -->
                 <div class="flex-auto flex flex-row overflow-y-auto bg-white">
-                    <div class="box min-[1280px]w-2/12 min-[1024px]:w-3/12 pt-2 flex border-e-2 bg-opacity-65 min-h-content max-[1024px]:w-full">
-                        <!-- Konten di sisi kiri -->
-                        <ul class="list-outside pl-1 w-full">
-                            <li class="font-semibold font-system-ui">
-                                <a href="#" class="text-md">Detail Laporan</a>
-                                <ul class="list-outside pl-5 mt-1">
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Detail Laporan</a></li>
-                                </ul>
-                            </li>
-                            <li class="font-semibold font-system-ui">
-                                <a href="#" class="text-md font-semibold">Progres Laporan</a>
-                                <ul class="list-outside pl-5 mt-1">
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 1 ihvfhefvehfjefv hjefvjevfjjvfejv</a></li>
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 2</a></li>
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 3</a></li>
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 4</a></li>
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 5</a></li>
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 6</a></li>
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Detail 7</a></li>
-                                </ul>
-                            </li>
-                            <li class="font-semibold font-system-ui">
-                                <a href="#" class="text-md font-semibold">Review Laporan</a>
-                                <ul class="list-outside pl-5 mt-1">
-                                    <li class="flex"><x-tabler-letter-l class="-translate-y-1.5 min-w-[24px] min-h-[24px]"/><a href="#" class="text-xs translate-y-1">Sub Message</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                        
-                    </div>
-                    <div class="box min-[1280px]:w-10/12 min-[1024px]:w-9/12 h-20 bg-opacity-65 min-[1024px]:blok max-[1024px]:hidden">
-                        <!-- Konten di sisi kanan -->
+                    <div class="box w-full">
+                        {{-- class="box min-[1280px]:w-10/12 min-[1024px]:w-9/12 h-20 bg-opacity-65 min-[1024px]:blok max-[1024px]:hidden"> --}}
+                        <!-- Konten -->
+                        <section class="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
+                            <!-- Header Detail -->
+                            <header>
+                                <h1 class="text-2xl font-system-ui font-bold">Detail Laporan</h1>
+                            </header>
+
+                            <main class="mt-8">
+                                <h2 class="mt-6 text-gray-700 dark:text-gray-200 font-system-ui">Subject :
+                                    {{ $detailLaporan->subject }}</h2>
+
+                                <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300 font-system-ui">
+                                    {{ $detailLaporan->message }}
+                                </p>
+
+                                @if (!$detailLaporan->attachments->isEmpty())
+                                    ada
+                                @endif
+                                {{-- <iframe class="w-full h-64 my-10 rounded-lg md:h-80" src="https://www.youtube.com/embed/L6Jwa7al8os" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> --}}
+
+                                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                    Terimakasih , <br>
+                                    @if ($detailLaporan->roomType == 'anonim')
+                                        Anonim
+                                    @else
+                                        {{ $detailLaporan->sender->name }}
+                                    @endif
+                                </p>
+                            </main>
+
+
+                            <footer class="mt-8 text-center">
+                                <h3 class="font-medium text-gray-800 dark:text-white">Action the Report</h3>
+                                <div class="mt-6">
+                                    <a href="#"
+                                        class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm overflow-hidden text-white transition-colors duration-300 bg-gray-900 rounded-lg shadow sm:w-auto sm:mx-2 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
+                                        <x-mdi-comment-processing-outline class="w-5 h-5 mx-2 fill-current" />
+
+                                        <span class="mx-2">
+                                            Comment This Report
+                                        </span>
+                                    </a>
+
+                                    <a href="#"
+                                        class="inline-flex items-center justify-center w-full px-4 py-2.5 mt-4 text-sm overflow-hidden text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow sm:w-auto sm:mx-2 sm:mt-0 hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                                        <x-fas-file-shield class="w-5 h-5 mx-2 fill-current" />
+
+                                        <span class="mx-2">
+                                            Process This Report
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <p class="mt-6 text-gray-500 dark:text-gray-400">
+                                    This email was sent to <a href="#"
+                                        class="text-blue-600 hover:underline dark:text-blue-400"
+                                        target="_blank">contact@merakiui.com</a>.
+                                    If you'd rather not receive this kind of email, you can <a href="#"
+                                        class="text-blue-600 hover:underline dark:text-blue-400">unsubscribe</a> or <a
+                                        href="#" class="text-blue-600 hover:underline dark:text-blue-400">manage
+                                        your email preferences</a>.
+                                </p>
+
+                                <p class="mt-3 text-gray-500 dark:text-gray-400">© Meraki UI. All Rights Reserved.</p>
+                            </footer>
+                        </section>
                         <div class="p-5">
-                            <h1>konten 1</h1>
+                            {{ $detailLaporan }}
                         </div>
                     </div>
                 </div>

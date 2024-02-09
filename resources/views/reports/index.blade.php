@@ -3,14 +3,16 @@
         <h1 class="font-semibold text-2xl md:text-3xl mb-2 font-system-ui capitalize">
             {{ __('Laporan') }}
         </h1>
-        <p class="text-sm mb-4 text-gray-400 dark:text-gray-400 font-system-ui capitalize ">{{ __('Daftar Seluruh Data Laporan Siswa SMPN 18 Malang') }}</p>
+        <p class="text-sm mb-4 text-gray-400 dark:text-gray-400 font-system-ui capitalize ">
+            {{ __('Daftar Seluruh Data Laporan Siswa SMPN 18 Malang') }}</p>
         <div class="border-b border-gray-300 my-5"></div>
         <!-- Page mother -->
         <div class="flex items-center justify-center min-h-content rounded-xl drop-shadow-lg">
             <!-- Page wrapper -->
             <section class="shadow-xl w-full lg:mx-auto flex min-h-content rounded-xl">
                 <!-- Left section -->
-                <div class="w-full flex flex-col justify-start items-stretch bg-gray-200 bg-opacity-70 dark:bg-gray-800 p-3 rounded-l-xl">
+                <div
+                    class="w-full flex flex-col justify-start items-stretch bg-gray-200 bg-opacity-70 dark:bg-gray-800 p-3 rounded-l-xl">
                     <div class="flex flex-row justify-between items-center mb-2">
                         <div class="flex flex-row">
                             <button
@@ -49,28 +51,34 @@
                                         @foreach ($getLaporan as $key => $laporan)
                                             <a class="my-2 p-2 flex flex-row cursor-pointer rounded-lg hover:bg-blue-600 hover:shadow-lg transition ease-in-out duration-150"
                                                 href="{{ route('report.show', $laporan->id) }}">
-                                                @if ($laporan->sender->name == Auth::user()->name)
-                                                    @if ($laporan->avatar_recivers != null)
-                                                        <img class="h-12 w-12 rounded-full mr-4"
-                                                            src="{{ asset('storage/images/' . $laporan->avatar_recivers) }}"
-                                                            alt="{{ $laporan->reciver_names }}" />
-                                                    @else
-                                                        <img class="h-12 w-12 rounded-full mr-4"
-                                                            :src="generateAvatar('{{ $laporan->email_recivers }}')"
-                                                            alt="{{ $laporan->reciver_names }}" />
-                                                    @endif
+                                                @if ($laporan->roomType == 'anonim')
+                                                    <img class="h-12 w-12 rounded-full mr-4"
+                                                        :src="generateAvatar('{{ $laporan->sender->anonymous }}')"
+                                                        alt="{{ $laporan->sender->anonymous }}" />
                                                 @else
-                                                    @if ($laporan->sender->avatar_url != null)
-                                                        <img class="h-12 w-12 rounded-full mr-4"
-                                                            src="{{ asset('storage/images/' . $laporan->sender->avatar_url) }}"
-                                                            alt="{{ $laporan->sender->name }}" />
+                                                    @if ($laporan->sender->name == Auth::user()->name)
+                                                        @if ($laporan->avatar_recivers != null)
+                                                            <img class="h-12 w-12 rounded-full mr-4"
+                                                                src="{{ asset('storage/images/' . $laporan->avatar_recivers) }}"
+                                                                alt="{{ $laporan->reciver_names }}" />
+                                                        @else
+                                                            <img class="h-12 w-12 rounded-full mr-4"
+                                                                :src="generateAvatar('{{ $laporan->email_recivers }}')"
+                                                                alt="{{ $laporan->reciver_names }}" />
+                                                        @endif
                                                     @else
-                                                        <img class="h-12 w-12 rounded-full mr-4"
-                                                            :src="generateAvatar('{{ $laporan->sender->email }}')"
-                                                            alt="{{ $laporan->sender->name }}" />
+                                                        @if ($laporan->sender->avatar_url != null)
+                                                            <img class="h-12 w-12 rounded-full mr-4"
+                                                                src="{{ asset('storage/images/' . $laporan->sender->avatar_url) }}"
+                                                                alt="{{ $laporan->sender->name }}" />
+                                                        @else
+                                                            <img class="h-12 w-12 rounded-full mr-4"
+                                                                :src="generateAvatar('{{ $laporan->sender->email }}')"
+                                                                alt="{{ $laporan->sender->name }}" />
+                                                        @endif
                                                     @endif
                                                 @endif
-    
+
                                                 <script>
                                                     function generateAvatar(email) {
                                                         const name = email.substring(0, 2); // ambil dua huruf pertama dari email
@@ -84,7 +92,14 @@
                                                             @if ($laporan->sender->name == Auth::user()->name)
                                                                 Laporan To {{ $laporan->reciver_names }}
                                                             @else
-                                                                Laporan From {{ $laporan->sender->name }}
+                                                                @if ($laporan->roomType == 'anonim')
+                                                                    {{ __('Laporan Anonim') }}
+                                                                @elseif ($laporan->roomType == 'public')
+                                                                    {{ $laporan->sender->name }} -
+                                                                    {{ __('Laporan Public') }}
+                                                                @elseif ($laporan->roomType == 'private')
+                                                                    {{ $laporan->sender->name }}
+                                                                @endif
                                                             @endif
                                                         </h2>
                                                         <div class="flex flex-row">
@@ -107,7 +122,7 @@
                                                     </div>
                                                     <div class="flex flex-row justify-between items-center my-1">
                                                         <p class="text-sm font-system-ui font-light text-gray-400">
-                                                            {{ __($laporan->message) }}
+                                                            {{ Str::limit($laporan->message, 100, '...') }}
                                                         </p>
                                                         <p class="text-sm text-gray-400 dark:text-gray-400">
                                                             {{ __($laporan->created_at->diffForHumans()) }}
@@ -118,6 +133,10 @@
                                         @endforeach
                                     @endisset
                                 </ul>
+
+                                <div>
+                                    {{ $getLaporan->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,14 +145,14 @@
                 <div
                     class="hidden w-9/12 lg:flex flex-col justify-start items-stretch border-r dark:border-blue-800 rounded-r-xl">
                     <div class="flex items-center justify-center w-full h-full rounded-r-xl">
-                        <img src="{{ asset('img/login.jpg')}}" class="object-cover w-full h-full rounded-r-xl">
+                        <img src="{{ asset('img/login.jpg') }}" class="object-cover w-full h-full rounded-r-xl">
                     </div>
                 </div>
             </section>
         </div>
     </div>
-        {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
-        {{-- <script>
+    {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
+    {{-- <script>
         function detailLaporanRequest(id) {
             fetch("/report-show/" + id, {
                     method: "GET",

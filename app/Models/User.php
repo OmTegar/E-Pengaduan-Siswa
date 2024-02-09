@@ -24,7 +24,7 @@ class User extends Authenticatable
         'password',
         'avatar_url',
         'role_id',
-        'anonymous_name',
+        'anonymous',
     ];
 
     /**
@@ -66,8 +66,9 @@ class User extends Authenticatable
     /**
      * Relationship: Seorang user dapat memiliki banyak penerimaan laporan.
      */
-    public function reportRecipients()
-    {
-        return $this->hasMany(ReportRecipient::class, 'recipient_id');
-    }
+
+     public function reportRecivers()
+     {
+         return $this->hasMany(ReportReciver::class, 'reciver_id');
+     }
 }
