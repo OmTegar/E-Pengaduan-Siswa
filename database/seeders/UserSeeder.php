@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
             'role_id' => 3,
         ]);
 
-        User::factory(5)->create([
+        User::factory(25)->create([
             'role_id' => 2,
         ]);
     }

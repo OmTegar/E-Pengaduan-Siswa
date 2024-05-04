@@ -1,6 +1,7 @@
 @if (session('success'))
+<div class="px-0 sm:px-4">
     <div id="alert-success" x-data="{ open: true }" x-show="open" x-cloak
-        class="fixed p-4 m-2 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+        class="p-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800 w-[100%]"
         role="alert">
         <div class="flex items-center">
             <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -31,10 +32,11 @@
             </button>
         </div>
     </div>
+</div>
 @endif
 @if (session('warning'))
     <div id="alert-warning" x-data="{ open: true }" x-show="open" x-cloak
-        class="fixed p-4 m-2 text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800"
+        class="p-4 m-2 text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800 z-50 absolute top-0"
         role="alert">
         <div class="flex items-center">
             <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +70,7 @@
 @endif
 @if (session('error'))
     <div id="alert-error" x-data="{ open: true }" x-show="open" x-cloak
-        class="fixed p-4 m-2 text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+        class="p-4 m-2 text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 z-50 absolute top-0"
         role="alert">
         <div class="flex items-center">
             <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"

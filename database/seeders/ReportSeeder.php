@@ -16,7 +16,7 @@ class ReportSeeder extends Seeder
     {
         $userIds = User::where('role_id', 2)->pluck('id')->toArray();
 
-        Report::factory(100)->create()->each(function ($report) use ($userIds) {
+        Report::factory(1000)->create()->each(function ($report) use ($userIds) {
             shuffle($userIds);
             $reciverIds = array_slice($userIds, 0, rand(1, count($userIds)));
             foreach ($reciverIds as $reciverId) {

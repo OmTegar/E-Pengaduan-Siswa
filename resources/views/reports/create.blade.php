@@ -1,5 +1,12 @@
 <x-app-layout>
+    <div class="p-2 absolute bottom-2 w-[96%] lg:w-[50%] right-3 sm:right-5 z-50 hidden">
+        <div class="bg-gray-200 p-4 rounded-lg shadow-lg">
+            <div id="preview" class="flex flex-wrap gap-2 overflow-y-auto h-[400px]"></div>
+        </div>
+    </div>
     <div name="header" class="px-6 py-4 md:p-4 mb-5">
+        <!-- Page Alerts -->
+        @include('components.alerts')
         <h1 class="font-semibold text-2xl md:text-3xl mb-2 font-system-ui capitalize">
             {{ __('Laporan') }}
         </h1>
@@ -8,8 +15,6 @@
         <div class="border-b border-gray-300 my-5"></div>
         <!-- Page mother -->
         <div class="min-h-content">
-            <!-- Page Alerts -->
-            @include('components.alerts')
 
             <!-- Page wrapper -->
             <form action="{{ route('report.store') }}" method="post">
@@ -20,7 +25,7 @@
                         Buat Laporan Anda
                     </div>
                     <div class="max-w-full">
-                        <div id="additionalInputsContainer" class="my-4 grid grid-cols-8 gap-4">
+                        <div id="additionalInputsContainer" class="my-4 flex flex-col sm:flex-row gap-4">
 
                             <div class="col-span-4">
                                 <legend class="text-sm font-semibold leading-6 text-gray-900">Choose Your Type Report
@@ -31,7 +36,8 @@
                             <fieldset class="col-span-4">
                                 <div class="space-y-6">
                                     <div class="flex items-center gap-x-3">
-                                        <input id="laporan-publik" name="roomType[]" value="public" type="radio" required
+                                        <input id="laporan-publik" name="roomType[]" value="public" type="radio"
+                                            required
                                             class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
                                         <label for="laporan-publik"
                                             class="block text-sm font-medium leading-6 text-gray-900">Laporan Publik
@@ -40,7 +46,8 @@
                                         </label>
                                     </div>
                                     <div class="flex items-center gap-x-3">
-                                        <input id="laporan-privat" name="roomType[]" value="private" type="radio" required
+                                        <input id="laporan-privat" name="roomType[]" value="private" type="radio"
+                                            required
                                             class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
                                         <label for="laporan-privat"
                                             class="block text-sm font-medium leading-6 text-gray-900">Laporan Privat
@@ -49,7 +56,8 @@
                                         </label>
                                     </div>
                                     <div class="flex items-center gap-x-3">
-                                        <input id="laporan-anonim" name="roomType[]" value="anonim" type="radio" required
+                                        <input id="laporan-anonim" name="roomType[]" value="anonim" type="radio"
+                                            required
                                             class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
                                         <label for="laporan-anonim"
                                             class="block text-sm font-medium leading-6 text-gray-900">Laporan Anonymus
@@ -59,28 +67,32 @@
                                     </div>
                                 </div>
                             </fieldset>
-                            <div class="col-span-4" id="cloneRecipient">
-                                <label for="recipient_id" class="block text-sm font-medium leading-6 text-gray-900">
-                                    Choose Your Reciver</label>
-                                <div class="mt-2">
-                                    <select id="recipient_id" name="recipient[]" autocomplete="Reciver-name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                                        @foreach ($dataGuru as $guru)
-                                            <option value="{{ $guru->id }}">
-                                                {{ $guru->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                        </div>
+
+                        <div class="col-span-4 mt-2 bg-gray-100 rounded-md shadow-md w-full">
+                            <div class="flex items-center align-middle">
+                                <p class="text-sm text-gray-900 dark:text-white pt-2 ps-2">
+                                    Pilih Penerima Laporan Anda / Pilih semua
+                                <div class="flex text-center items-center ms-6">
+                                    <input id="check_all" type="checkbox"
+                                        class="w-4 h-4 mt-2 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="check_all" class="text-sm text-gray-900 dark:text-white pt-2 ps-2">Check
+                                        All </label>
                                 </div>
                             </div>
+                            <div class="border-b border-gray-300 my-2"></div>
+                            <div class="mx-2 flex flex-wrap gap-2">
+                                @foreach ($dataGuru as $guru)
+                                    <div class="flex items-center me-4 mb-4 min-w-[18rem]">
+                                        <input id="recipient_id_{{ $guru->id }}" type="checkbox"
+                                            value="{{ $guru->id }}" name="recipient[]"
+                                            class="w-6 h-6 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="recipient_id_{{ $guru->id }}"
+                                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $guru->name }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <button type="button" onclick="addSelectInput()">
-                            <p class="text-sm text-gray-900 dark:text-white">
-                                Add More Receivers +
-                            </p>
-                        </button>
-
-
                         <div class="mt-4">
                             <label for="Subject"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject
@@ -110,37 +122,22 @@
                                         Kirim Keluhan
                                     </button>
                                     <div class="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
-                                        <button type="button"
-                                            class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
-                                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 12 20">
-                                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
-                                                    d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6" />
-                                            </svg>
-                                            <span class="sr-only">Attach file</span>
-                                        </button>
-                                        <button type="button"
-                                            class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
-                                            <svg class="w-4 h-4" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 16 20">
-                                                <path
-                                                    d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
-                                            </svg>
-                                            <span class="sr-only">Set location</span>
-                                        </button>
-                                        <button type="button"
-                                            class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
-                                            <svg class="w-4 h-4" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 20 18">
-                                                <path
-                                                    d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
-                                            </svg>
-                                            <span class="sr-only">Upload image</span>
-                                        </button>
+                                        <div class="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
+                                            <label for="attachment"
+                                                class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                                <x-icon.attach-file class="w-4 h-4" aria-hidden="true"
+                                                    viewBox="0 0 12 20" fill="none" />
+                                                <span class="sr-only">Attach file</span>
+                                            </label>
+                                            <input id="attachment" type="file" name="attachment[]" class="hidden"
+                                                accept="image/*, video/*, application/pdf, application/msword" multiple
+                                                onchange="previewFiles()">
+                                        </div>
                                     </div>
                                 </div>
+                                <p class="mt-1 text-sm leading-6 text-gray-600 hidden" id="text_priview_document">Your
+                                    document selected.</p>
+                                <div id="preview" class="max-w-[48rem] max-h-[12rem] flex flex-wrap gap-1"></div>
                             </div>
                         </div>
                     </div>
@@ -148,18 +145,62 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkAllCheckbox = document.getElementById('check_all');
+            var guruCheckboxes = document.querySelectorAll('input[name="recipient[]"]');
+
+            checkAllCheckbox.addEventListener('change', function() {
+                // Perbarui status checkbox guru berdasarkan status checkbox "Check All"
+                guruCheckboxes.forEach(function(checkbox) {
+                    checkbox.checked = checkAllCheckbox.checked;
+                });
+            });
+
+            guruCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    // Periksa apakah setiap checkbox guru telah dicentang atau tidak
+                    var allChecked = true;
+                    guruCheckboxes.forEach(function(checkbox) {
+                        if (!checkbox.checked) {
+                            allChecked = false;
+                        }
+                    });
+
+                    // Perbarui status checkbox "Check All" berdasarkan status checkbox guru
+                    checkAllCheckbox.checked = allChecked;
+                });
+            });
+        });
+    </script>
 
     <script>
-        function addSelectInput() {
-            // Clone the original select input
-            var originalSelect = document.getElementById('cloneRecipient');
-            var clonedSelect = originalSelect.cloneNode(true);
+        function previewFiles() {
+            var preview = document.querySelector('#preview');
+            var header = document.querySelector('#text_priview_document');
+            var files = document.querySelector('input[type=file]').files;
 
-            // Reset the selected option in the cloned select
-            clonedSelect.selectedIndex = 0;
+            function readAndPreview(file) {
+                if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                    var reader = new FileReader();
 
-            // Append the cloned select to the container
-            document.getElementById('additionalInputsContainer').appendChild(clonedSelect);
+                    reader.addEventListener("load", function() {
+                        var image = new Image();
+                        image.classList = 'w-[8rem] h-8rem';
+                        image.title = file.name;
+                        image.src = this.result;
+                        preview.appendChild(image);
+                    }, false);
+
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            if (files) {
+                [].forEach.call(files, readAndPreview);
+                header.classList.remove('hidden');
+            }
         }
     </script>
+
 </x-app-layout>

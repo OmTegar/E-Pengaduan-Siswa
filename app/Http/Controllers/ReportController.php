@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\User;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use App\Models\ReportReciver;
 use function Termwind\render;
+
 use App\Http\Controllers\Controller;
 
 use function Laravel\Prompts\select;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
@@ -45,8 +46,10 @@ class ReportController extends Controller
             $recivers = User::whereIn('id', $laporan->reciver->pluck('reciver_id'))->get();
             $nameRecivers = $recivers->pluck('name')->toArray();
             $avatarRecivers = $recivers->pluck('avatar_url')->toArray();
+            $emailRecivers = $recivers->pluck('email')->toArray();
 
             $laporan->avatar_recivers = $avatarRecivers[0] ?? null;
+            $laporan->email_recivers = $emailRecivers[0] ?? null;
             $laporan->reciver_names = '';
 
             if (count($nameRecivers) > 1) {
@@ -79,41 +82,52 @@ class ReportController extends Controller
     // public function store(Request $request) : RedirectResponse
     public function store(StoreReportRequest $request): RedirectResponse
     {
-        $request->validated([
-            'Sender_id' => 'required',
-            'recipient' => 'required',
-            'Subject' => 'required',
-            'Message' => 'required',
-            'roomType' => 'required',
-        ]);
+        try {
+            $request->validated([
+                'Sender_id' => 'required',
+                'recipient' => 'required',
+                'Subject' => 'required',
+                'Message' => 'required',
+                'roomType' => 'required',
+                'attachment'=>'nullable'
+            ]);
 
-        // dd($request->all());
-
-        // Filter out "Choose Your Reciver"
-        $filteredRecipients = array_filter($request->recipient, function ($recipient) {
-            return $recipient !== 'Choose Your Reciver';
-        });
-
-        // Remove duplicate recipient IDs
-        $uniqueRecipients = array_unique($filteredRecipients);
-
-        // Create a new Report
-        $report = new Report();
-        $report->sender_id = $request->Sender_id;
-        $report->subject = $request->Subject;
-        $report->message = $request->Message;
-        $report->roomType = $request->roomType[0];
-        $report->save();
-
-        // Attach unique recipients to the report
-        foreach ($uniqueRecipients as $recipient) {
-            $reportRecipient = new ReportReciver();
-            $reportRecipient->report_id = $report->id;
-            $reportRecipient->reciver_id = $recipient;
-            $reportRecipient->save();
+            dd($request->all());
+        } catch (Throwable $e) {
+            return Redirect::back()->with('error', $e->getMessage());
         }
 
-        return Redirect::route('report.index')->with('success', 'Laporan berhasil dikirim');
+        try {
+            // Remove duplicate recipient IDs
+            $uniqueRecipients = array_unique($request->recipient);
+            // Create a new Report
+            $report = new Report();
+            $report->sender_id = $request->Sender_id;
+            $report->subject = $request->Subject;
+            $report->message = $request->Message;
+            $report->roomType = $request->roomType[0];
+            $report->save();
+
+            // Attach unique recipients to the report
+            foreach ($uniqueRecipients as $recipient) {
+                $reportRecipient = new ReportReciver();
+                $reportRecipient->report_id = $report->id;
+                $reportRecipient->reciver_id = $recipient;
+                $reportRecipient->save();
+            }
+
+            if ($request->hasFile('attachment')) {
+                dd('oke file');
+                // Handle file upload and storage logic here
+                foreach ($request->file('attachment') as $file) {
+                    // Save or process each file as needed
+                }
+            }
+
+            return Redirect::route('report.index')->with('success', 'Laporan berhasil dikirim');
+        } catch (Throwable $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
     }
 
 
@@ -135,11 +149,11 @@ class ReportController extends Controller
             $nameRecivers = $recivers->pluck('name')->toArray();
             $avatarRecivers = $recivers->pluck('avatar_url')->toArray();
             $emailRecivers = $recivers->pluck('email')->toArray();
-        
+
             $laporan->email_recivers = $emailRecivers[0] ?? null;
             $laporan->avatar_recivers = $avatarRecivers[0] ?? null;
             $laporan->reciver_names = '';
-        
+
             // Jika ada lebih dari satu penerima, tambahkan '& x others' di akhir
             if (count($nameRecivers) > 1) {
                 $laporan->reciver_names = implode(' & ', array_slice($nameRecivers, 0, 1)); // Tambahkan satu nama penerima pertama
@@ -149,7 +163,7 @@ class ReportController extends Controller
                 $laporan->reciver_names = $nameRecivers[0] ?? null;
             }
         });
-        
+
 
         $detailLaporan = $detailLaporan->first();
         // dd($detailLaporan);
@@ -184,7 +198,9 @@ class ReportController extends Controller
      */
     public function destroy(Report $report)
     {
-        //
+        $report->delete();
+
+        return Redirect::route('report.index')->with('success', 'Laporan berhasil Dihapus');
     }
 
     public function strore_document(Request $request)

@@ -1,122 +1,141 @@
 <x-app-layout>
-    <div name="header" class="px-6 py-4 md:p-4 mb-5">
-        <h1 class="font-semibold text-2xl md:text-3xl mb-2 font-system-ui capitalize">
-            @if ($detailLaporan->roomType == 'public')
-                {{ __('Laporan Publik') }}
-            @elseif ($detailLaporan->roomType == 'private')
-                {{ __('Laporan Pribadi') }}
-            @else
-                {{ __('Laporan anonim') }}
-            @endif
-        </h1>
-        <p class="text-sm mb-4 text-gray-400 dark:text-gray-400 font-system-ui capitalize">
-            @if ($detailLaporan->sender_id == Auth::user()->id)
-                @if ($detailLaporan->roomType == 'anonim')
-                    {{ __('Laporan Untuk') }} Anonim
-                @else
-                    {{ __('Laporan Untuk') }} {{ $detailLaporan->reciver_names }}
-                @endif
-            @else
-                @if ($detailLaporan->roomType == 'anonim')
-                    {{ __('Laporan Dari') }} Anonim
-                @else
-                    {{ __('Laporan Dari') }} {{ $detailLaporan->sender->name }}
-                @endif
-            @endif
-        </p>
-        <div class="border-b border-gray-300 my-5"></div>
-        <!-- Page mother -->
-        <div class="flex items-center justify-center min-h-content drop-shadow-lg">
+    <div name="header" class="p-2 mb-5">
+        <div class="flex items-center justify-center">
             <!-- Page wrapper -->
-            <div class="w-full min-h-content bg-white lg:flex flex-col justify-start items-stretch">
+            <div class="w-full  lg:flex flex-col justify-start items-stretch">
                 <!-- Header -->
-                <header class="flex flex-row justify-between bg-gray-200 border-opacity-50">
+                <header class="flex flex-row justify-between">
                     <a href="{{ route('report.index') }}"
-                        class="px-1 mx-2 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
-                        <x-bx-arrow-back class="w-8 ease-in-out duration-300" />
+                        class="py-1 mx-2 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
+                        <x-icon.backward class="w-7 ease-in-out duration-300 fill-blue-500" viewBox="0 0 576 512" />
                     </a>
-                    <div class="py-1 px-5 me-2 flex gap-2">
-                        <p>konten samping kanan</p>
-                        <a href="#"
-                            class="px-1 mx-2 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
-                            <x-fas-edit class="w-8 ease-in-out duration-300" />
+                    <div class="py-1 flex gap-1">
+                        <a href="#" class="px-1 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
+                            <x-icon.edit class="w-7 ease-in-out duration-300 fill-blue-500" viewBox="0 0 576 512" />
                         </a>
+                        <form action="{{ route('report.destroy', $detailLaporan->id) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="px-1 focus:outline-none hover:text-blue-700 focus:ring-gray-200">
+                                <x-icon.trash class="w-7 ease-in-out duration-300 fill-blue-500"
+                                    viewBox="0 0 576 512" />
+                            </button>
+                        </form>
                     </div>
                 </header>
+                <div class="border-b border-gray-300 mb-3"></div>
+                @include('components.alerts')
+                <div class="mb-2">
+                    <h3 class="font-semibold text-lg md:text-3xl font-system-ui capitalize">
+                        @if ($detailLaporan->roomType == 'public')
+                            {{ __('Laporan Publik') }}
+                        @elseif ($detailLaporan->roomType == 'private')
+                            {{ __('Laporan Pribadi') }}
+                        @else
+                            {{ __('Laporan anonim') }}
+                        @endif
+                    </h3>
+                    <p class="text-sm text-gray-400 dark:text-gray-400 font-system-ui capitalize">
+                        @if ($detailLaporan->sender_id == Auth::user()->id)
+                            @if ($detailLaporan->roomType == 'anonim')
+                                {{ __('Laporan Untuk') }} Anonim
+                            @else
+                                {{ __('Laporan Untuk') }} {{ $detailLaporan->reciver_names }}
+                            @endif
+                        @else
+                            @if ($detailLaporan->roomType == 'anonim')
+                                {{ __('Laporan Dari') }} Anonim
+                            @else
+                                {{ __('Laporan Dari') }} {{ $detailLaporan->sender->name }}
+                            @endif
+                        @endif
+                    </p>
+                    <p class="text-sm text-gray-400 dark:text-gray-400 font-system-ui capitalize">
+                        Status : {{ $detailLaporan->status }}
+                    </p>
+                </div>
 
                 <!-- Content -->
-                <div class="flex-auto flex flex-row overflow-y-auto bg-white">
+                <div class="flex-auto flex flex-row overflow-y-auto">
                     <div class="box w-full">
-                        {{-- class="box min-[1280px]:w-10/12 min-[1024px]:w-9/12 h-20 bg-opacity-65 min-[1024px]:blok max-[1024px]:hidden"> --}}
                         <!-- Konten -->
-                        <section class="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
-                            <!-- Header Detail -->
-                            <header>
-                                <h1 class="text-2xl font-system-ui font-bold">Detail Laporan</h1>
-                            </header>
+                        <div class="mx-4 max-w p-4 bg-transparent lg:bg-gray-200 shadow-sm min-h-[45rem] rounded-xl">
+                            <section
+                                class="px-6 min-w-xl max-w-[50rem] my-2 py-8 mx-auto dark:bg-gray-900 bg-white shadow-sm rounded-xl min-h-[40rem]">
+                                <!-- Header Detail -->
+                                <header>
+                                    <h1 class="text-2xl font-system-ui font-bold">Detail Laporan</h1>
+                                </header>
+                                <div class="flex flex-col">
+                                    <main class="min-h-[24rem] flex-grow">
+                                        <h2 class="mt-6 text-gray-700 dark:text-gray-200 font-system-ui">Subject :
+                                            {{ $detailLaporan->subject }}</h2>
 
-                            <main class="mt-8">
-                                <h2 class="mt-6 text-gray-700 dark:text-gray-200 font-system-ui">Subject :
-                                    {{ $detailLaporan->subject }}</h2>
+                                        <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300 font-system-ui">
+                                            {{ $detailLaporan->message }}
+                                        </p>
 
-                                <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300 font-system-ui">
-                                    {{ $detailLaporan->message }}
-                                </p>
+                                        @if (!$detailLaporan->attachments->isEmpty())
+                                            <div class="mt-4">
+                                                <h3 class="text-lg font-medium text-gray-800 dark:text-white">
+                                                    Attachments</h3>
+                                                <div class="grid grid-cols-2 gap-4 mt-2">
+                                                    @foreach ($detailLaporan->attachments as $attachment)
+                                                        <a href="{{ asset('storage/' . $attachment->path) }}"
+                                                            target="_blank"
+                                                            class="flex items-center justify-center w-full h-32 p-4 text-sm overflow-hidden text-white transition-colors duration-300 bg-gray-900 rounded-lg shadow sm:w-auto sm:mx-2 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
+                                                            <x-icon.file-shield class="w-5 h-5 mx-2 fill-current" />
+                                                            <span class="mx-2">{{ $attachment->name }}</span>
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            {{-- ada --}}
+                                        @endif
+                                        {{-- <iframe class="w-full h-64 my-10 rounded-lg md:h-80" src="https://www.youtube.com/embed/L6Jwa7al8os" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> --}}
 
-                                @if (!$detailLaporan->attachments->isEmpty())
-                                    ada
-                                @endif
-                                {{-- <iframe class="w-full h-64 my-10 rounded-lg md:h-80" src="https://www.youtube.com/embed/L6Jwa7al8os" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> --}}
+                                        <p class="mt-2 text-gray-600 dark:text-gray-300">
+                                            Terimakasih , <br>
+                                            @if ($detailLaporan->roomType == 'anonim')
+                                                Anonim
+                                            @else
+                                                {{ $detailLaporan->sender->name }}
+                                            @endif
+                                        </p>
+                                    </main>
+                                    <footer class="mt-auto text-center">
+                                        <h3 class="font-medium text-gray-800 dark:text-white">Action the Report</h3>
+                                        <div class="mt-6">
+                                            <a href="#"
+                                                class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm overflow-hidden text-white transition-colors duration-300 bg-gray-900 rounded-lg shadow sm:w-auto sm:mx-2 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
+                                                {{-- <x-mdi-comment-processing-outline class="w-5 h-5 mx-2 fill-current" /> --}}
 
-                                <p class="mt-2 text-gray-600 dark:text-gray-300">
-                                    Terimakasih , <br>
-                                    @if ($detailLaporan->roomType == 'anonim')
-                                        Anonim
-                                    @else
-                                        {{ $detailLaporan->sender->name }}
-                                    @endif
-                                </p>
-                            </main>
+                                                <span class="mx-2">
+                                                    Comment This Report
+                                                </span>
+                                            </a>
 
+                                            <a href="#"
+                                                class="inline-flex items-center justify-center w-full px-4 py-2.5 mt-4 text-sm overflow-hidden text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow sm:w-auto sm:mx-2 sm:mt-0 hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                                                {{-- <x-fas-file-shield class="w-5 h-5 mx-2 fill-current" /> --}}
 
-                            <footer class="mt-8 text-center">
-                                <h3 class="font-medium text-gray-800 dark:text-white">Action the Report</h3>
-                                <div class="mt-6">
-                                    <a href="#"
-                                        class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm overflow-hidden text-white transition-colors duration-300 bg-gray-900 rounded-lg shadow sm:w-auto sm:mx-2 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
-                                        <x-mdi-comment-processing-outline class="w-5 h-5 mx-2 fill-current" />
+                                                <span class="mx-2">
+                                                    Process This Report
+                                                </span>
+                                            </a>
+                                        </div>
 
-                                        <span class="mx-2">
-                                            Comment This Report
-                                        </span>
-                                    </a>
-
-                                    <a href="#"
-                                        class="inline-flex items-center justify-center w-full px-4 py-2.5 mt-4 text-sm overflow-hidden text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow sm:w-auto sm:mx-2 sm:mt-0 hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                                        <x-fas-file-shield class="w-5 h-5 mx-2 fill-current" />
-
-                                        <span class="mx-2">
-                                            Process This Report
-                                        </span>
-                                    </a>
+                                        <p class="mt-3 text-gray-500 dark:text-gray-400">©
+                                            {{ config('app.developer', 'E - Pengaduan Siswa') }}. All Rights Reserved.
+                                        </p>
+                                    </footer>
                                 </div>
-
-                                <p class="mt-6 text-gray-500 dark:text-gray-400">
-                                    This email was sent to <a href="#"
-                                        class="text-blue-600 hover:underline dark:text-blue-400"
-                                        target="_blank">contact@merakiui.com</a>.
-                                    If you'd rather not receive this kind of email, you can <a href="#"
-                                        class="text-blue-600 hover:underline dark:text-blue-400">unsubscribe</a> or <a
-                                        href="#" class="text-blue-600 hover:underline dark:text-blue-400">manage
-                                        your email preferences</a>.
-                                </p>
-
-                                <p class="mt-3 text-gray-500 dark:text-gray-400">© Meraki UI. All Rights Reserved.</p>
-                            </footer>
-                        </section>
-                        <div class="p-5">
-                            {{ $detailLaporan }}
+                            </section>
                         </div>
+                        {{-- <div class="p-5">
+                            {{ $detailLaporan }}
+                        </div> --}}
                     </div>
                 </div>
 
