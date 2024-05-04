@@ -3,11 +3,11 @@
     <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
     <a href="{{ route('report.index') }}" role="menuitem"
         class="block p-2 text-sm text-white font-system-ui transition-colors duration-200 rounded-md dark:text-white dark:hover:text-light hover:text-gray-700">
-        All Report
+        Semua Laporan
     </a>
-    <a href="#" role="menuitem"
+    <a href="{{ route('report.unreadReport') }}" role="menuitem"
         class="block p-2 text-sm text-white transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-        Report Unread
+        Laporan Belum Dibaca
     </a>
     <a href="#" role="menuitem"
         class="block p-2 text-sm text-white transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">

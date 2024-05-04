@@ -1,15 +1,17 @@
 <x-app-layout>
     <div name="header" class="px-6 py-4 md:p-4 mb-5">
         <h1 class="font-semibold text-2xl md:text-3xl mb-2 font-system-ui capitalize">
-            {{ __('Laporan') }}
+            {{ __($title) }}
         </h1>
         <p class="text-sm mb-4 text-gray-400 dark:text-gray-400 font-system-ui capitalize ">
             {{ __('Daftar Seluruh Data Laporan Siswa SMPN 18 Malang') }}</p>
+            @include('components.alerts')
         <div class="border-b border-gray-300 my-5"></div>
         <!-- Page mother -->
         <div class="flex items-center justify-center min-h-content rounded-xl drop-shadow-lg">
             <!-- Page wrapper -->
             <section class="shadow-xl w-full lg:mx-auto flex min-h-content rounded-xl">
+                
                 <!-- Left section -->
                 <div
                     class="w-full flex flex-col justify-start items-stretch bg-gray-200 bg-opacity-70 dark:bg-gray-800 p-3 rounded-l-xl">

@@ -18,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
+use Database\Factories\ReportFactory;
 
 class ReportController extends Controller
 {
@@ -31,7 +32,8 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $paginateControl = 15;
+        $title = 'Semua Laporan';
+        $paginateControl = 30;
 
         $getLaporan = Report::orderByDesc('created_at')
             ->without('attachments')
@@ -61,7 +63,7 @@ class ReportController extends Controller
             }
         });
         // dd($getLaporan);
-        return view('reports.index', compact('getLaporan'));
+        return view('reports.index', compact('getLaporan', 'title'));
     }
 
 
@@ -86,24 +88,31 @@ class ReportController extends Controller
             $request->validated([
                 'Sender_id' => 'required',
                 'recipient' => 'required',
-                'Subject' => 'required',
+                'Lokasi' => 'required',
                 'Message' => 'required',
                 'roomType' => 'required',
                 'attachment'=>'nullable'
             ]);
 
-            dd($request->all());
+            if ($request->roomType[0] === 'anonim') {
+                $anonimName = Report::getAnonymousName();
+            }
+
+            // dd($anonimName);
+
+            // dd($request->all());
         } catch (Throwable $e) {
             return Redirect::back()->with('error', $e->getMessage());
         }
-
+        // dd($request->all());
         try {
             // Remove duplicate recipient IDs
             $uniqueRecipients = array_unique($request->recipient);
             // Create a new Report
             $report = new Report();
             $report->sender_id = $request->Sender_id;
-            $report->subject = $request->Subject;
+            $report->anonymous_name = $anonimName ?? null;
+            $report->lokasi = $request->Lokasi;
             $report->message = $request->Message;
             $report->roomType = $request->roomType[0];
             $report->save();
@@ -175,6 +184,14 @@ class ReportController extends Controller
 
         // Render the view 'layouts.detailReportOpen' with the data '$detailLaporan'
         return view('layouts.detailLaporanTab', compact('detailLaporan'));
+    }
+
+    public function processingReport(Report $report)
+    {
+        // dd($report);
+        $report->update(['status' => 'diproses']);
+
+        return Redirect::route('report.index')->with('success', 'Laporan berhasil diproses');
     }
 
     /**

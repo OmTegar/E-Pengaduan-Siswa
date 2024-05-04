@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('avatar_url')->nullable()->default(null);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('anonymous')->unique()->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });

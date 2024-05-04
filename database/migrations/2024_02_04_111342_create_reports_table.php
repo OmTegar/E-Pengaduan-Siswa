@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->uuid('id')->primary(); 
             $table->unsignedBigInteger('sender_id');
-            $table->string('subject');
+            $table->string('anonymous_name')->unique()->nullable()->default(null);
+            $table->string('lokasi');
             $table->text('message');
             $table->enum('status', ['terkirim', 'dibaca', 'diproses', 'selesai'])->default('terkirim');
             $table->enum('roomType', ['public', 'private', 'anonim'])->default('public');

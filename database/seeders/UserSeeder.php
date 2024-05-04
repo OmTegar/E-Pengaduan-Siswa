@@ -34,13 +34,13 @@ class UserSeeder extends Seeder
             'role_id' => 3,
         ]);
         User::factory()->create([
-            'name' => 'Meera Savina',
-            'email' => 'meera@gmail.com',
+            'name' => 'M naufal mathara',
+            'email' => 'nopal@gmail.com',
             'role_id' => 3,
         ]);
         User::factory()->create([
-            'name' => 'Widyan sotya',
-            'email' => 'widyan@gmail.com',
+            'name' => 'Jaka Pramuka',
+            'email' => 'jaka@gmail.com',
             'role_id' => 3,
         ]);
 

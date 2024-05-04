@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\User;
+use App\Models\ReportReciver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ReportAttachment;
+use Illuminate\Support\Str;
+
 
 class Report extends Model
 {
@@ -68,5 +73,10 @@ class Report extends Model
     public function attachments()
     {
         return $this->hasMany(ReportAttachment::class, 'report_id');
+    }
+
+    public static function getAnonymousName(): string
+    {
+        return Str::random(10);
     }
 }

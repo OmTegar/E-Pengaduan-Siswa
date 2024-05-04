@@ -69,8 +69,8 @@
                                 </header>
                                 <div class="flex flex-col">
                                     <main class="min-h-[24rem] flex-grow">
-                                        <h2 class="mt-6 text-gray-700 dark:text-gray-200 font-system-ui">Subject :
-                                            {{ $detailLaporan->subject }}</h2>
+                                        <h2 class="mt-6 text-gray-700 dark:text-gray-200 font-system-ui">Lokasi :
+                                            {{ $detailLaporan->lokasi }}</h2>
 
                                         <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300 font-system-ui">
                                             {{ $detailLaporan->message }}
@@ -98,38 +98,41 @@
                                         <p class="mt-2 text-gray-600 dark:text-gray-300">
                                             Terimakasih , <br>
                                             @if ($detailLaporan->roomType == 'anonim')
-                                                Anonim
+                                                {{ $detailLaporan->anonymous_name }}
                                             @else
                                                 {{ $detailLaporan->sender->name }}
                                             @endif
                                         </p>
                                     </main>
                                     <footer class="mt-auto text-center">
-                                        <h3 class="font-medium text-gray-800 dark:text-white">Action the Report</h3>
-                                        <div class="mt-6">
-                                            <a href="#"
-                                                class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm overflow-hidden text-white transition-colors duration-300 bg-gray-900 rounded-lg shadow sm:w-auto sm:mx-2 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
-                                                {{-- <x-mdi-comment-processing-outline class="w-5 h-5 mx-2 fill-current" /> --}}
+                                        @if (auth()->check() && (auth()->user()->role_id == 1 || auth()->user()->role_id == 2))
+                                            <h3 class="font-medium text-gray-800 dark:text-white">Action the Report</h3>
+                                            <div class="mt-6">
+                                                <a href="#"
+                                                    class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm overflow-hidden text-white transition-colors duration-300 bg-gray-900 rounded-lg shadow sm:w-auto sm:mx-2 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
+                                                    {{-- <x-mdi-comment-processing-outline class="w-5 h-5 mx-2 fill-current" /> --}}
 
-                                                <span class="mx-2">
-                                                    Comment This Report
-                                                </span>
-                                            </a>
+                                                    <span class="mx-2">
+                                                        Comment This Report
+                                                    </span>
+                                                </a>
 
-                                            <a href="#"
-                                                class="inline-flex items-center justify-center w-full px-4 py-2.5 mt-4 text-sm overflow-hidden text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow sm:w-auto sm:mx-2 sm:mt-0 hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                                                {{-- <x-fas-file-shield class="w-5 h-5 mx-2 fill-current" /> --}}
+                                                <a href="{{ route('report.processingReport', $detailLaporan) }}"
+                                                    class="inline-flex items-center justify-center w-full px-4 py-2.5 mt-4 text-sm overflow-hidden text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow sm:w-auto sm:mx-2 sm:mt-0 hover:bg-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                                                    {{-- <x-fas-file-shield class="w-5 h-5 mx-2 fill-current" /> --}}
 
-                                                <span class="mx-2">
-                                                    Process This Report
-                                                </span>
-                                            </a>
-                                        </div>
-
+                                                    <span class="mx-2">
+                                                        Process This Report
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        @endif
                                         <p class="mt-3 text-gray-500 dark:text-gray-400">©
-                                            {{ config('app.developer', 'E - Pengaduan Siswa') }}. All Rights Reserved.
+                                            {{ config('app.developer', 'E - Pengaduan Siswa') }}. All Rights
+                                            Reserved.
                                         </p>
                                     </footer>
+
                                 </div>
                             </section>
                         </div>
