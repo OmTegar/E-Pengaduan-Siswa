@@ -1,6 +1,6 @@
 <div class="flex flex-col items-center">
     <button
-        class="transition-opacity duration-200 rounded-lg dark:opacity-85 dark:hover:opacity-100 focus:outline-none focus:ring dark:focus:opacity-100"
+        class="transition-opacity duration-200 rounded-lg dark:hover:opacity-90 focus:outline-none focus:ring dark:focus:opacity-100"
         id="uploadButton">
         <span class="sr-only">User menu</span>
         @if (Auth::user()->avatar_url != null)

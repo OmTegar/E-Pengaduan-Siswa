@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 // class User extends Authenticatable implements MustVerifyEmail
-{ 
+{
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -67,8 +67,18 @@ class User extends Authenticatable
      * Relationship: Seorang user dapat memiliki banyak penerimaan laporan.
      */
 
-     public function reportRecivers()
+    public function reportRecivers()
+    {
+        return $this->hasMany(ReportReciver::class, 'reciver_id');
+    }
+
+    /**
+     * check role
+     */
+
+     public function hasRole($role)
      {
-         return $this->hasMany(ReportReciver::class, 'reciver_id');
+         $userRole = $this->role()->pluck('name')->toArray();
+         return collect($role)->intersect($userRole)->isNotEmpty();
      }
 }

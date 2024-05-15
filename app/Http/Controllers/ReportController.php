@@ -6,19 +6,22 @@ use Throwable;
 use App\Models\User;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use App\Models\ReportComment;
 use App\Models\ReportReciver;
 use function Termwind\render;
+use App\Models\ReportAttachment;
 
 use App\Http\Controllers\Controller;
 
 use function Laravel\Prompts\select;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Database\Factories\ReportFactory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
-use Database\Factories\ReportFactory;
 
 class ReportController extends Controller
 {
@@ -91,16 +94,12 @@ class ReportController extends Controller
                 'Lokasi' => 'required',
                 'Message' => 'required',
                 'roomType' => 'required',
-                'attachment'=>'nullable'
+                'attachment.*' => 'nullable'
             ]);
 
             if ($request->roomType[0] === 'anonim') {
                 $anonimName = Report::getAnonymousName();
             }
-
-            // dd($anonimName);
-
-            // dd($request->all());
         } catch (Throwable $e) {
             return Redirect::back()->with('error', $e->getMessage());
         }
@@ -126,10 +125,14 @@ class ReportController extends Controller
             }
 
             if ($request->hasFile('attachment')) {
-                dd('oke file');
-                // Handle file upload and storage logic here
                 foreach ($request->file('attachment') as $file) {
-                    // Save or process each file as needed
+                    $filename = $file->hashName();
+                    $file->storeAs('public/uploads', $filename);
+
+                    $attachment = new ReportAttachment();
+                    $attachment->report_id = $report->id;
+                    $attachment->filename = '/storage/uploads/' . $filename;
+                    $attachment->save();
                 }
             }
 
@@ -146,7 +149,7 @@ class ReportController extends Controller
     public function show($uuid)
     {
         // Fetch the report with the specified UUID and its reciver relationship
-        $detailLaporan = Report::where('id', $uuid)->with('reciver')->get();
+        $detailLaporan = Report::where('id', $uuid)->with('reciver', 'comments')->get();
 
         if ($detailLaporan->first()->status === 'terkirim') {
             if ($detailLaporan->first()->sender_id !== Auth::user()->id) {
@@ -155,10 +158,12 @@ class ReportController extends Controller
         }
         $detailLaporan->each(function ($laporan) {
             $recivers = User::whereIn('id', $laporan->reciver->pluck('reciver_id'))->get();
+            // $comments = ReportComment::where('report_id', $laporan->id)->get();
             $nameRecivers = $recivers->pluck('name')->toArray();
             $avatarRecivers = $recivers->pluck('avatar_url')->toArray();
             $emailRecivers = $recivers->pluck('email')->toArray();
 
+            // $laporan->comments = $comments;
             $laporan->email_recivers = $emailRecivers[0] ?? null;
             $laporan->avatar_recivers = $avatarRecivers[0] ?? null;
             $laporan->reciver_names = '';
@@ -183,6 +188,7 @@ class ReportController extends Controller
         }
 
         // Render the view 'layouts.detailReportOpen' with the data '$detailLaporan'
+        // dd($detailLaporan);
         return view('layouts.detailLaporanTab', compact('detailLaporan'));
     }
 
@@ -191,7 +197,7 @@ class ReportController extends Controller
         // dd($report);
         $report->update(['status' => 'diproses']);
 
-        return Redirect::route('report.index')->with('success', 'Laporan berhasil diproses');
+        return Redirect::route('report.progressingReport')->with('success', 'Laporan berhasil diproses');
     }
 
     /**
@@ -199,7 +205,11 @@ class ReportController extends Controller
      */
     public function edit(Report $report)
     {
-        //
+        // dd($report);
+        $dataGuru = User::where('role_id', 2)->select('id', 'name')->get();
+
+        // dd($dataGuru);
+        return view('reports.edit', compact('dataGuru', 'report'));
     }
 
     /**
@@ -207,7 +217,72 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report)
     {
-        //
+        // dd($request->all());
+
+        try {
+            $request->validated([
+                'Sender_id' => 'required',
+                'recipient' => 'required',
+                'Lokasi' => 'required',
+                'Message' => 'required',
+                'roomType' => 'required',
+                'attachment.*' => 'nullable'
+            ]);
+
+            if ($request->roomType[0] === 'anonim') {
+                $anonimName = Report::getAnonymousName();
+            }
+
+            // dd($anonimName);
+
+            // dd($request->all());
+        } catch (Throwable $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
+
+        try {
+            // Remove duplicate recipient IDs
+            $uniqueRecipients = array_unique($request->recipient);
+            // Update the Report
+            $report->sender_id = $request->Sender_id;
+            $report->lokasi = $request->Lokasi;
+            $report->message = $request->Message;
+            $report->roomType = $request->roomType[0];
+            $report->save();
+
+            // Attach unique recipients to the report
+            $report->reciver()->delete();
+
+            foreach ($uniqueRecipients as $recipient) {
+                $reportRecipient = new ReportReciver();
+                $reportRecipient->report_id = $report->id;
+                $reportRecipient->reciver_id = $recipient;
+                $reportRecipient->save();
+            }
+
+            if ($request->hasFile('attachment')) {
+                $report->attachments()->delete();
+                $oldAttachments = $report->attachments;
+
+                // Hapus setiap foto lama dari penyimpanan
+                foreach ($oldAttachments as $oldAttachment) {
+                    Storage::delete(str_replace('/storage', 'public', $oldAttachment->filename));
+                }
+                foreach ($request->file('attachment') as $file) {
+                    $filename = $file->hashName();
+                    $file->storeAs('public/uploads', $filename);
+
+                    $attachment = new ReportAttachment();
+                    $attachment->report_id = $report->id;
+                    $attachment->filename = '/storage/uploads/' . $filename;
+                    $attachment->save();
+                }
+            }
+
+            return Redirect::route('report.index')->with('success', 'Laporan berhasil diubah');
+        } catch (Throwable $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -232,5 +307,33 @@ class ReportController extends Controller
         return back()
             ->with('success', 'You have successfully upload file.')
             ->with('file', $documentName);
+    }
+
+    public function finishReport(Report $report)
+    {
+        $report->update(['status' => 'selesai']);
+
+        return Redirect::route('report.selesaiReport')->with('success', 'Laporan berhasil diselesaikan');
+    }
+
+    public function commentReport(Report $report, Request $request)
+    {
+        // dd($report, $request->all());
+
+        try {
+            $request->validate([
+                'comment' => 'required',
+            ]);
+
+            $comment = new ReportComment();
+            $comment->report_id = $report->id;
+            $comment->user_id = Auth::user()->id;
+            $comment->comment = $request->comment;
+            $comment->save();
+
+            return Redirect::back()->with('success', 'Komentar berhasil ditambahkan');
+        } catch (Throwable $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
     }
 }

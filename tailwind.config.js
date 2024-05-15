@@ -28,6 +28,7 @@ export default {
           'gray-light': '#d3dce6',
           'neutral': '#f5f5f5',
           'utama-hijau':'#088395',
+          'darker': '#12263f',
         },
         fontFamily: {
           sans: ['Graphik', 'sans-serif'],

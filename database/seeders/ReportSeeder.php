@@ -17,6 +17,12 @@ class ReportSeeder extends Seeder
         $userIds = User::where('role_id', 2)->pluck('id')->toArray();
 
         Report::factory(1000)->create()->each(function ($report) use ($userIds) {
+            if ($report->roomType === 'anonim') {
+                $report->update([
+                    'anonymous_name' => Report::getAnonymousName(),
+                ]);
+                return;
+            }
             shuffle($userIds);
             $reciverIds = array_slice($userIds, 0, rand(1, count($userIds)));
             foreach ($reciverIds as $reciverId) {

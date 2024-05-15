@@ -69,6 +69,8 @@ class ProfileController extends Controller
             'avatar' => ['required', 'image'],
         ]);
 
+        // dd($request->all());
+
         $user = User::find($request->user_id);
 
         if ($user) {

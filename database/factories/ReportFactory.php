@@ -28,7 +28,7 @@ class ReportFactory extends Factory
     {
         return [
             'sender_id' => User::factory()->state(['role_id' => 3]),
-            'subject' => $this->faker->sentence,
+            'lokasi' => $this->faker->address,
             'message' => $this->faker->text,
             'status' => $this->faker->randomElement(['terkirim', 'dibaca', 'diproses', 'selesai']),
             'roomType' => $this->faker->randomElement(['public', 'private', 'anonim']),

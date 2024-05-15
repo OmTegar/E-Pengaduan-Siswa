@@ -35,6 +35,13 @@ const setup = () => {
                 this.$refs.settingsPanel.focus();
             });
         },
+        isComentsPanelOpen: false,
+        openComentsPanel() {
+            this.isComentsPanelOpen = true;
+            this.$nextTick(() => {
+                this.$refs.commentsPanel.focus();
+            });
+        },
         isNotificationsPanelOpen: false,
         openNotificationsPanel() {
             this.isNotificationsPanelOpen = true;

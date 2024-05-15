@@ -20,11 +20,11 @@
     <!-- component -->
     <div class="bg-gray-100 flex justify-center items-center h-screen">
         <!-- Left: Image -->
-        <div class="w-7/12 h-screen hidden lg:block">
-            <img src="{{ asset('img/login.jpg') }}"
+        <div class="w-full h-screen hidden lg:block">
+            <img src="{{ asset('img/main.png') }}"
                 alt="Placeholder Image" class="object-cover w-full h-full">
         </div>
-        <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-5/12">
+        <div class="lg:p-16 md:p-52 sm:20 p-8 w-full lg:w-6/12">
             {{ $slot }}
         </div>
     </div>

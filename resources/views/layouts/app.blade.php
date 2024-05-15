@@ -16,6 +16,10 @@
     <!-- Css -->
     <link rel="stylesheet" href="{{ asset('src/css/main.css') }}">
 
+    {{-- icon --}}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/logo.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/logo.png') }}">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -40,7 +44,7 @@
 
 
                 <!-- Main content -->
-                <main class="">
+                <main class="border-l-2 dark:border-l-blue-900">
                     {{ $slot }}
                 </main>
 

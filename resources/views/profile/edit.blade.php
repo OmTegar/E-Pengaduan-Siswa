@@ -12,12 +12,12 @@
                             @include('layouts.components.avatar-32')
                         </div>
                         <div class="mt-5 mb-1 px-3 text-center">
-                            <p class="text-xl font-serif font-medium">
+                            <p class="text-xl font-medium">
                                 {{ $user->name }}
                             </p>
                         </div>
                         <div class="mb-5 px-3 text-center text-sky-500">
-                            <p class="text-sm font-serif font-light">
+                            <p class="text-sm font-light">
                                 {{ $user->email }}
                             </p>
                         </div>

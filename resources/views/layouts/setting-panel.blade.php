@@ -15,7 +15,7 @@
     aria-labelledby="settinsPanelLabel">
     <div class="absolute left-0 p-2 transform -translate-x-full">
         <!-- Close button -->
-        <button @click="isSettingsPanelOpen = false" class="p-2 text-white rounded-md focus:outline-none focus:ring">
+        <button @click="isSettingsPanelOpen = false" class="p-2 text-white rounded-md">
             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

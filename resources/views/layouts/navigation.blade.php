@@ -1,4 +1,4 @@
-<header class="relative bg-white dark:bg-darker drop-shadow-md">
+<header class="relative bg-white dark:bg-darker drop-shadow-md border-l-2 dark:border-l-blue-900 z-50">
     <div class="flex items-center justify-between p-2 drop-shadow-md">
         <!-- Mobile menu button -->
         <button @click="isMobileMainMenuOpen = !isMobileMainMenuOpen"
@@ -14,7 +14,7 @@
 
         <!-- Brand -->
         <div class="shrink-0 flex items-center">
-            <a href="{{ route('dashboard') }}">
+            <a href="{{ route('home') }}">
                 <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
             </a>
         </div>
@@ -67,43 +67,38 @@
         </nav>
     </div>
     <!-- Mobile main manu -->
-    <div class="border-b lg:hidden dark:border-blue-800" x-show="isMobileMainMenuOpen"
+    <div class="border-b bg-utama-hijau dark:bg-darker lg:hidden border-teal-800 dark:border-blue-800" x-show="isMobileMainMenuOpen"
         @click.away="isMobileMainMenuOpen = false">
         <nav aria-label="Main" class="px-2 py-4 space-y-2">
             <!-- Dashboards links -->
-            <div x-data="{ isActive: false, open: false }">
+            <div x-data="{{ Request::is('report/*', 'report') ? '{ isActive: true, open: true }' : '{ isActive: false, open: false }' }}">
                 <!-- active & hover classes 'bg-blue-100 dark:bg-blue-600' -->
                 <a @click="$event.preventDefault(); open = !open"
-                    class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-blue-100 dark:hover:bg-blue-600"
-                    :class="{ 'bg-blue-100 dark:bg-blue-600': isActive || open }" role="button" aria-haspopup="true"
+                    class="flex items-center p-2 bg-biru dark:bg-blue-600 text-white transition-colors rounded-md dark:text-light dark:hover:bg-blue-600 cursor-pointer"
                     :aria-expanded="(open || isActive) ? 'true' : 'false'">
                     <span aria-hidden="true">
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                     </span>
-                    <span class="ml-2 text-sm"> Dashboards </span>
+                    <span class="ml-2 text-sm"> Laporan </span>
                     <span class="ml-auto" aria-hidden="true">
                         <!-- active class 'rotate-180' -->
                         <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 9l-7 7-7-7" />
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </span>
                 </a>
                 @include('components.menunav-dashboard')
             </div>
 
-            <!-- Components links -->
-            <div x-data="{ isActive: false, open: false }">
+            <div x-data="{{ Request::is('management/*', 'management') ? '{ isActive: true, open: true }' : '{ isActive: false, open: false }' }}">
                 <!-- active classes 'bg-blue-100 dark:bg-blue-600' -->
                 <a href="#" @click="$event.preventDefault(); open = !open"
-                    class="flex items-center p-2 text-gray-500 transition-colors rounded-md dark:text-light hover:bg-blue-100 dark:hover:bg-blue-600"
-                    :class="{ 'bg-blue-100 dark:bg-blue-600': isActive || open }" role="button" aria-haspopup="true"
+                    class="flex items-center p-2 bg-biru dark:bg-blue-600 text-white transition-colors rounded-md dark:text-light dark:hover:bg-blue-600 cursor-pointer" role="button" aria-haspopup="true"
                     :aria-expanded="(open || isActive) ? 'true' : 'false'">
                     <span aria-hidden="true">
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -112,51 +107,27 @@
                                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
                     </span>
-                    <span class="ml-2 text-sm"> Components </span>
+                    <span class="ml-2 flex-1 ms-3 text-left text-sm whitespace-nowrap font-system-ui"> Menejemen
+                    </span>
                     <span aria-hidden="true" class="ml-auto">
                         <!-- active class 'rotate-180' -->
                         <svg class="w-4 h-4 transition-transform transform" :class="{ 'rotate-180': open }"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 9l-7 7-7-7" />
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </span>
                 </a>
                 <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" arial-label="Components">
                     <!-- active & hover classes 'text-gray-700 dark:text-light' -->
                     <!-- inActive classes 'text-gray-400 dark:text-gray-400' -->
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
-                        Alerts
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:text-gray-400 dark:hover:text-light hover:text-gray-700">
-                        Buttons
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        Cards
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        Dropdowns
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        Forms
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        Lists
-                    </a>
-                    <a href="#" role="menuitem"
-                        class="block p-2 text-sm text-gray-400 transition-colors duration-200 rounded-md dark:hover:text-light hover:text-gray-700">
-                        Modals
+                    <a href="/management/data-pengguna" role="menuitem"
+                        class="block p-2 text-sm text-white transition-colors duration-200 rounded-md dark:hover:text-light dark:hover:text-gray-300 hover:text-gray-300">
+                        Data Pengguna
                     </a>
                 </div>
             </div>
 
+            {{-- <!-- Components links -->
             <!-- Pages links -->
             <div x-data="{ isActive: true, open: true }">
                 <!-- active classes 'bg-blue-100 dark:bg-blue-600' -->
@@ -249,7 +220,7 @@
                         Password Reset (soon)
                     </a>
                 </div>
-            </div>
+            </div> --}}
         </nav>
     </div>
 </header>

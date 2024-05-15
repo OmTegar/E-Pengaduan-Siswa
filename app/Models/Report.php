@@ -79,4 +79,24 @@ class Report extends Model
     {
         return Str::random(10);
     }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->diffForHumans();
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->diffForHumans();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(ReportComment::class, 'report_id');
+    }
+
+    public function publicView()
+    {
+        return $this->hasOne(ReportPublicView::class, 'report_id');
+    }
 }
